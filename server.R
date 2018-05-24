@@ -5,8 +5,8 @@ shinyServer(function(input, output, session) {
     
     input$update   # catching the action button event
     isolate(leaflet() %>%
-              addProviderTiles("Stamen.Watercolor")) %>%
-      setView(lng = 18.9, lat = 48.46, zoom = 5)
+              addProviderTiles(input$bmap)) %>%
+      setView(lng = 18.9, lat = 48.46, zoom = 12)
   })
   
   
