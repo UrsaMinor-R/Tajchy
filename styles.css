@@ -1,0 +1,52 @@
+@import url("//fonts.googleapis.com/css?family=Special+Elite");
+@import url("//fonts.googleapis.com/css?family=Mate");
+
+
+h1 {
+	font-family: "Special Elite";
+	font-size: 38px;
+	font-style: italic;
+	font-variant: small-caps;
+	font-weight: 700;
+	line-height: 41.8px;
+	color: #2B7A78;
+}
+
+body {
+  background-color: #fff;
+  font-family: "Mate";
+  color: #17252A;
+}
+
+h3 {
+	font-family: "Special Elite";
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 500;
+	line-height: 15.4px;
+}
+p {
+	font-family: "Special Elite";
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 20px;
+}
+blockquote {
+	font-family: "Special Elite";
+	font-size: 21px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 30px;
+}
+pre {
+	font-family: "Special Elite";
+	font-size: 13px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 18.5714px;
+}
