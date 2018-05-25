@@ -15,12 +15,6 @@ shinyServer(function(input, output) {
       return(NULL)
     }
     
-    # shapeData <- readOGR(".",'polyline')
-    shpTajchy <- readOGR(".",'tajchy_tab')
-    # ogrInfo(".",'polyline')
-    shpTajchy <- spTransform(shpTajchy, CRS("+proj=longlat +datum=WGS84 +no_defs"))
-    dtTajchy <- data.table::setDT(as.data.frame(shpTajchy))
-
     
     
     
@@ -45,9 +39,38 @@ shinyServer(function(input, output) {
       filter(skupina %in% input$skupina) %>%
       select("name", "kupanie")
     DT::datatable(data = data_from_selected_tajch, 
-                  options = list(pageLength = 10), 
+                  options = list(pageLength = 5), 
                   rownames = FALSE)
   })
   
+  # Create the plot
+  # output$scatterplot <- renderPlot({
+  #   req(input$analyza)
+  #   selected_analysis <- dtTajchy %>%
+  #     select("plocha", analyza)
+  #   ggplot(data = selected_analysis, aes(x = selected_analysis[,1], y = selected_analysis[,2], color = selected_analysis[,1])) +
+  #     geom_point()
+  # })
+  # 
+  # p <- plot_ly(shpTajchy = ~ shpTajchy$nadmVyska) %>% add_surface()
+  # 
+  # plot_ly(type = "scatter3d", x = dtTajchy$x, y = dtTajchy$y,z = dtTajchy$nadmVyska,mode = "markers", color = dtTajchy$skupina)
+  # plot_ly(dtTajchy, type = "scatter3d",
+  #         x = ~x, y = ~y,z = ~nadmVyska,
+  #         mode = "markers",
+  #         symbol = ~skupina, 
+  #         color = ~skupina,
+  #         text = ~paste(name))
+  
+  # http://www.prvybanickyspolok.sk/content/historia/vodohospodarsky-system
+  
+  # Create the plot
+  # output$scatterplot <- renderPlot({
+  #   req(input$date)
+  #   movies_selected_date <- movies %>%
+  #     filter(thtr_rel_date >= as.POSIXct(input$date[1]) & thtr_rel_date <= as.POSIXct(input$date[2]))
+  #   ggplot(data = movies_selected_date, aes(x = critics_score, y = audience_score, color = mpaa_rating)) +
+  #     geom_point()
+  # })
  
 })

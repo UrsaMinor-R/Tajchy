@@ -1,3 +1,11 @@
+# shapeData <- readOGR(".",'polyline')
+shpTajchy <- readOGR(".",'tajchy_tab')
+# ogrInfo(".",'polyline')
+shpTajchy <- spTransform(shpTajchy, CRS("+proj=longlat +datum=WGS84 +no_defs"))
+dtTajchy <- data.table::setDT(as.data.frame(shpTajchy))
+
+min_mnm <- min(dtTajchy$nadmVyska)
+max_mnm <- max(dtTajchy$nadmVyska)
 
 
 shinyUI(bootstrapPage(
@@ -29,7 +37,11 @@ shinyUI(bootstrapPage(
                             selected = "OpenStreetMap.Mapnik"),
                 actionButton("update", "Update Map!"),
                 
+                br(),br(),
+                
                 # SELECTINPUT - VYBER SKUPINY TAJCHOV a JARKOV ----------------------------
+                
+                
                 selectInput(inputId ="skupina",
                             label = "Skupina tajchov", c("Piargske" = "piargske",
                                                          "Štiavnické"="stiavnicke",
@@ -41,8 +53,12 @@ shinyUI(bootstrapPage(
                                                          "Pukanské"="pukanske"),
                             selectize = TRUE, selected = "stiavnicke", multiple = TRUE),
                 # SLIDER ------------------------------------------------------------------
+                # Explanatory text
+                HTML(paste0("Movies released between the following dates will be plotted. 
+                  Pick dates between ", min_mnm, " and ", max_mnm, ".")),
+                
                 sliderInput("elev", "Elevation (m n.m.)",
-                            min = 400, max = 1000, value = c(400,800)),
+                            min = min_mnm, max = max_mnm, value = c(min_mnm,max_mnm)),
                 
                 # CHECKBOX ----------------------------------------------------------------
                 checkboxGroupInput("checkbox", "Objects to show:",
@@ -51,25 +67,43 @@ shinyUI(bootstrapPage(
                                      "Štôlne" = "stl"),
                                    selected = "tjch"),
                 
-                tags$div(class="header", checked=NA,
-                         tags$p("Ready to take the Shiny tutorial? If so"),
-                         tags$a(href="shiny.rstudio.com/tutorial", "Click Here!")
-                )
-                
-                ),
+                # tags$div(class="header", checked=NA,
+                #          tags$p("Ready to take the Shiny tutorial? If so"),
+                #          tags$a(href="shiny.rstudio.com/tutorial", "Click Here!")
+                # )
   
-  absolutePanel(id = "AbsTableInfo", top = 700, left = "auto", right = 50, bottom = "auto",
+                selectInput(inputId = "analyza",
+                            label = "Typ analýzy",c("Existencia" = "existencia",
+                                                    "Kúpanie" = "kupanie",
+                                                    "Vznik" = "vznik",
+                                                    "Nadmorská výška" = "nadmV",
+                                                    "Plocha" = "plocha",
+                                                    "Dĺžka hrádze" = "dlzkHradze",
+                                                    "Výška hrádze" = "vyskHrazde",
+                                                    "Šírka hrádze" = "srkHradze",
+                                                    "Objem v 1000m3" = "obj1000m3",
+                                                    "Maximálna hĺbka v metroch" = "maxHlbkaM"),
+                            selectize = TRUE, multiple = FALSE ),
+                            
+  
+  absolutePanel(id = "AbsTableInfo", top = 650, left = "auto", right = 50, bottom = "auto",
                 width="16%", height = "auto",
                 fixed = TRUE, draggable = TRUE,
                 
                 DT::dataTableOutput(outputId = "infoTable")
 
                 )
+  
+  
+  # Output(s)
+  # mainPanel(
+  #   plotOutput(outputId = "scatterplot")
+  # )
                 
   )
 
 
 
   
-  )
- 2
+  ))
+ 
