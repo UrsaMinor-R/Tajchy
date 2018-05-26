@@ -1,24 +1,20 @@
 
 
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
   
   
   # zoznam farieb pre jendotlive skupiny tajchov
-  dirColors <-c("1"="#595490", "2"="#527525", "3"="#A93F35", "4"="#BA48AA")
+  # dirColors <-c("1"="#595490", "2"="#527525", "3"="#A93F35", "4"="#BA48AA")
   
   
   #This function is repsonsible for loading in the selected file
-  filedata <- reactive({
-    infile <- input$datafile
-    if (is.null(infile)) {
-      # User has not uploaded a file yet
-      return(NULL)
-    }
+  # filedata <- reactive({
+  #   infile <- input$datafile
+  #   if (is.null(infile)) {
+  #     # User has not uploaded a file yet
+  #     return(NULL)
+  #   }
     
-    
-    
-    
-  })
   
   
   # output$mymap <- renderLeaflet({
@@ -57,33 +53,40 @@ shinyServer(function(input, output) {
   # 
   # plot_ly(type = "scatter3d", x = dtTajchy$x, y = dtTajchy$y,z = dtTajchy$nadmVyska,mode = "markers", color = dtTajchy$skupina)
   # plot_ly(dtTajchy, type = "scatter3d",
-  #         x = ~x, y = ~y,z = ~nadmVyska,
+  #         x = ~vznik, y = ~y,z = ~nadmVyska,
   #         mode = "markers",
-  #         symbol = ~skupina, 
+  #         symbol = ~skupina,
   #         color = ~skupina,
   #         text = ~paste(name))
   
   # http://www.prvybanickyspolok.sk/content/historia/vodohospodarsky-system
   
+
+  
+  # Create reactive data frame
+  shp_selected <- reactive({
+    req(input$range)
+    shpTajchy[shpTajchy$vznik > as.Date(as.POSIXct(paste(input$range[1], "-01-01", sep=""), origin = "1960-10-01")) &
+                shpTajchy$vznik < as.Date(as.POSIXct(paste(input$range[2], "-01-01", sep=""), origin = "1960-10-01")),]
+  })
+  
+  
   # Create the plot
   output$mymap <- renderLeaflet({
-    req(input$range)
-    # vznik >= as.POSIXct(input$range[1]) & vznik <= as.POSIXct(input$range[2]))
-    
-    input$update   # catching the action button event
+
     isolate(leaflet() %>%
               addProviderTiles(input$bmap)) %>%
       setView(lng = 18.9, lat = 48.458, zoom = 14) %>%
+      
       addPolygons(
-        data = shpTajchy[shpTajchy$vznik > as.Date(as.POSIXct(input$range[1], origin = "1960-10-01")) &
-                           shpTajchy$vznik < as.Date(as.POSIXct(input$range[2], origin = "1960-10-01")),],
-        weight = 1,
+        data = shp_selected(),
+        weight = 3,
         col = 'red',
-        label = data$name
+        label = shpTajchy$name
       ) %>%
     addMarkers(lng = 18.9, lat = 48.46, popup = "Hi there")
   })
-  
+
   # plot(shpTajchy[shpTajchy$skupina=='belianske', ])
 
  
