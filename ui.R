@@ -4,8 +4,16 @@ shpTajchy <- readOGR(".",'tajchy_tab')
 shpTajchy <- spTransform(shpTajchy, CRS("+proj=longlat +datum=WGS84 +no_defs"))
 dtTajchy <- data.table::setDT(as.data.frame(shpTajchy))
 
-min_mnm <- min(dtTajchy$nadmVyska)
-max_mnm <- max(dtTajchy$nadmVyska)
+min_mnm <- 1000
+max_mnm <- 2000
+
+
+shpTajchy$vznik <- zoo::as.Date(zoo::as.yearmon(shpTajchy$vznik, "%Y"), origin = "1960-10-01")
+
+
+
+
+
 
 
 shinyUI(bootstrapPage(
@@ -57,8 +65,8 @@ shinyUI(bootstrapPage(
                 HTML(paste0("Movies released between the following dates will be plotted. 
                   Pick dates between ", min_mnm, " and ", max_mnm, ".")),
                 
-                sliderInput("elev", "Elevation (m n.m.)",
-                            min = min_mnm, max = max_mnm, value = c(min_mnm,max_mnm)),
+                sliderInput("range", "Elevation (m n.m.)",
+                            min = min_mnm, max = max_mnm, value = c(min_mnm,max_mnm), animate = TRUE),
                 
                 # CHECKBOX ----------------------------------------------------------------
                 checkboxGroupInput("checkbox", "Objects to show:",
@@ -88,7 +96,8 @@ shinyUI(bootstrapPage(
   
   absolutePanel(id = "AbsTableInfo", top = 650, left = "auto", right = 50, bottom = "auto",
                 width="16%", height = "auto",
-                fixed = TRUE, draggable = TRUE,
+                fixed = TRUE, draggable = FALSE,
+                options = list(lengthChange = FALSE),
                 
                 DT::dataTableOutput(outputId = "infoTable")
 

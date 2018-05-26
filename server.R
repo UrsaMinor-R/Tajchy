@@ -21,15 +21,15 @@ shinyServer(function(input, output) {
   })
   
   
-  output$mymap <- renderLeaflet({
-    
-    input$update   # catching the action button event
-    isolate(leaflet() %>%
-              addProviderTiles(input$bmap)) %>%
-      setView(lng = 18.9, lat = 48.458, zoom = 14) %>% 
-    addPolygons(data=shpTajchy,weight=1,col = 'blue') %>% 
-    addMarkers(lng = 18.9, lat = 48.46,popup="Hi there")
-  })
+  # output$mymap <- renderLeaflet({
+  #   
+  #   input$update   # catching the action button event
+  #   isolate(leaflet() %>%
+  #             addProviderTiles(input$bmap)) %>%
+  #     setView(lng = 18.9, lat = 48.458, zoom = 14) %>% 
+  #   addPolygons(data=shpTajchy,weight=1,col = 'blue', label = shpTajchy$name) %>% 
+  #   addMarkers(lng = 18.9, lat = 48.46,popup="Hi there")
+  # })
   
   
   # Create data table
@@ -39,7 +39,8 @@ shinyServer(function(input, output) {
       filter(skupina %in% input$skupina) %>%
       select("name", "kupanie")
     DT::datatable(data = data_from_selected_tajch, 
-                  options = list(pageLength = 5), 
+                  options = list(pageLength = 5, lengthChange = FALSE),
+                  # options = list(lengthChange = FALSE),
                   rownames = FALSE)
   })
   
@@ -65,12 +66,25 @@ shinyServer(function(input, output) {
   # http://www.prvybanickyspolok.sk/content/historia/vodohospodarsky-system
   
   # Create the plot
-  # output$scatterplot <- renderPlot({
-  #   req(input$date)
-  #   movies_selected_date <- movies %>%
-  #     filter(thtr_rel_date >= as.POSIXct(input$date[1]) & thtr_rel_date <= as.POSIXct(input$date[2]))
-  #   ggplot(data = movies_selected_date, aes(x = critics_score, y = audience_score, color = mpaa_rating)) +
-  #     geom_point()
-  # })
+  output$mymap <- renderLeaflet({
+    req(input$range)
+    # vznik >= as.POSIXct(input$range[1]) & vznik <= as.POSIXct(input$range[2]))
+    
+    input$update   # catching the action button event
+    isolate(leaflet() %>%
+              addProviderTiles(input$bmap)) %>%
+      setView(lng = 18.9, lat = 48.458, zoom = 14) %>%
+      addPolygons(
+        data = shpTajchy[shpTajchy$vznik > as.Date(as.POSIXct(input$range[1], origin = "1960-10-01")) &
+                           shpTajchy$vznik < as.Date(as.POSIXct(input$range[2], origin = "1960-10-01")),],
+        weight = 1,
+        col = 'red',
+        label = data$name
+      ) %>%
+    addMarkers(lng = 18.9, lat = 48.46, popup = "Hi there")
+  })
+  
+  # plot(shpTajchy[shpTajchy$skupina=='belianske', ])
+
  
 })
