@@ -53,7 +53,7 @@ shinyServer(function(input, output, session) {
   # 
   # plot_ly(type = "scatter3d", x = dtTajchy$x, y = dtTajchy$y,z = dtTajchy$nadmVyska,mode = "markers", color = dtTajchy$skupina)
   # plot_ly(dtTajchy, type = "scatter3d",
-  #         x = ~vznik, y = ~y,z = ~nadmVyska,
+  #         x = ~x, y = ~y,z = ~nadmVyska,
   #         mode = "markers",
   #         symbol = ~skupina,
   #         color = ~skupina,
@@ -80,9 +80,9 @@ shinyServer(function(input, output, session) {
       
       addPolygons(
         data = shp_selected(),
-        weight = 3,
+        weight = 2,
         col = 'red',
-        label = shpTajchy$name
+        label = shp_selected()$name
       ) %>%
     addMarkers(lng = 18.9, lat = 48.46, popup = "Hi there")
   })

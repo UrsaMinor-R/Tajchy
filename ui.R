@@ -4,16 +4,10 @@ shpTajchy <- readOGR(".",'tajchy_tab')
 shpTajchy <- spTransform(shpTajchy, CRS("+proj=longlat +datum=WGS84 +no_defs"))
 dtTajchy <- data.table::setDT(as.data.frame(shpTajchy))
 
-min_mnm <- 1000
-max_mnm <- 2000
+min_date <- min(as.numeric(as.character(shpTajchy$vznik)))
+max_date <- max(as.numeric(as.character(shpTajchy$vznik)))
 
-
-shpTajchy$vznik <- zoo::as.Date(zoo::as.yearmon(shpTajchy$vznik, "%Y"), origin = "1960-10-01")
-
-
-
-
-
+shpTajchy$vznik <- zoo::as.Date(zoo::as.yearmon(shpTajchy$vznik, "%Y"), origin = "1960-01-01")
 
 
 shinyUI(bootstrapPage(
@@ -62,11 +56,22 @@ shinyUI(bootstrapPage(
                             selectize = TRUE, selected = "stiavnicke", multiple = TRUE),
                 # SLIDER ------------------------------------------------------------------
                 # Explanatory text
-                HTML(paste0("Movies released between the following dates will be plotted. 
-                  Pick dates between ", min_mnm, " and ", max_mnm, ".")),
+                # HTML(paste0("Movies released between the following dates will be plotted. 
+                #   Pick dates between ", min_date, " and ", max_date, ".")),
                 
                 sliderInput("range", "Elevation (m n.m.)",
-                            min = min_mnm, max = max_mnm, value = c(min_mnm,max_mnm), animate = TRUE),
+                            min = 1500, max = max_date, value = c(1500,max_date), animate = TRUE, step = 25),
+                
+                # sliderInput("range", "Elevation (m n.m.)",
+                #             min = 1500, max = max_date, value = c(1500), animate = TRUE, step = 25),
+
+                # dateRangeInput("rangeInput", "rozsah rokov",
+                #                start = "1300-01-01",
+                #                end = "1900-01-01",
+                #                startview = "year",
+                #                format = "yyyy",
+                #                min = min_date, max = max_date),
+                
                 
                 # CHECKBOX ----------------------------------------------------------------
                 checkboxGroupInput("checkbox", "Objects to show:",
@@ -80,6 +85,7 @@ shinyUI(bootstrapPage(
                 #          tags$a(href="shiny.rstudio.com/tutorial", "Click Here!")
                 # )
   
+                # selectInput - vyber obsahu tabulky-------------------------------------
                 selectInput(inputId = "analyza",
                             label = "Typ analýzy",c("Existencia" = "existencia",
                                                     "Kúpanie" = "kupanie",
@@ -93,7 +99,8 @@ shinyUI(bootstrapPage(
                                                     "Maximálna hĺbka v metroch" = "maxHlbkaM"),
                             selectize = TRUE, multiple = FALSE ),
                             
-  
+
+  # AbsPanel s TableInfo -----------------------------------------------------------------
   absolutePanel(id = "AbsTableInfo", top = 650, left = "auto", right = 50, bottom = "auto",
                 width="16%", height = "auto",
                 fixed = TRUE, draggable = FALSE,
@@ -103,11 +110,6 @@ shinyUI(bootstrapPage(
 
                 )
   
-  
-  # Output(s)
-  # mainPanel(
-  #   plotOutput(outputId = "scatterplot")
-  # )
                 
   )
 
