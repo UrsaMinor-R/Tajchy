@@ -34,7 +34,7 @@ shinyServer(function(input, output, session) {
   
   
 # LEAFLET -----------------------------------------------------------------
-  # Create the plot
+
   output$map <- renderLeaflet({
 
     input$update   # catching the action button event
@@ -51,35 +51,74 @@ shinyServer(function(input, output, session) {
       addMarkers(lng = 18.9, lat = 48.46, popup = "Hi there")
   })
   
-  
-  
-  
-
-
-  
   # plot(shpTajchy[shpTajchy$skupina=='belianske', ])
   
 
+  
 # GRAFY a TABULKA-------------------------------------------------------------------
 
-# 2D graf - PLOTLY 2D SCATTERPLOT -----------------------------------------------------------------
-
-
-
-# 3D graf - PLOTLY 3D SCATTERPLOT -----------------------------------------
-
+# 2D GRAF - plotly 3D scatterplot --------------------------------------------------
+  
+  output$plot2d <- renderPlotly({
+    # use the key aesthetic/argument to help uniquely identify selected observations
+    key <- row.names(mtcars)
+    if (identical(input$plotType, "ggplotly")) {
+      p <- ggplot(mtcars, aes(x = mpg, y = wt, colour = factor(vs), key = key)) + 
+        geom_point()
+      ggplotly(p) %>% layout(dragmode = "select")
+    } else {
+      plot_ly(mtcars, x = ~mpg, y = ~wt, key = ~key) %>%
+        layout(dragmode = "select")
+    }
+  })
+  
+  output$hover2d <- renderPrint({
+    d <- event_data("plotly_hover")
+    if (is.null(d)) "Hover events appear here (unhover to clear)" else d
+  })
+  
+  output$click2d <- renderPrint({
+    d <- event_data("plotly_click")
+    if (is.null(d)) "Click events appear here (double-click to clear)" else d
+  })
+  
+  output$brush2d <- renderPrint({
+    d <- event_data("plotly_selected")
+    if (is.null(d)) "Click and drag events (i.e., select/lasso) appear here (double-click to clear)" else d
+  })
+  
+  output$zoom2d <- renderPrint({
+    d <- event_data("plotly_relayout")
+    if (is.null(d)) "Relayout (i.e., zoom) events appear here" else d
+  })
   
 
+
+
+# 3D GRAF - plotly 3D scatterplot -----------------------------------------
+  output$plot3d <- renderPlotly({
+    
+    plot_ly(dtTajchy, x = ~x, y = ~y, z = ~nadmVyska, type = "scatter3d",
+    #mode = "markers",
+    symbol = ~skupina,
+    color = ~skupina,
+    text = ~paste(name)) 
+  
+  })
+  
+  output$hover3d <- renderPrint({
+    d <- event_data("plotly_hover")
+    if (is.null(d)) "Zobrazenie informácií po nadídení myškou nad bod." else d
+  })
+  
+  output$click3d <- renderPrint({
+    d <- event_data("plotly_click")
+    if (is.null(d)) "Zobrazenie informácií po nadídení myškou nad bod" else d
+  })
+  
+  
 # DATATABLE ---------------------------------------------------------------
 
-
-#   plot_ly(dtTajchy, type = "scatter3d",
-#           x = ~x, y = ~y,z = ~nadmVyska,
-#           mode = "markers",
-#           symbol = ~skupina,
-#           color = ~skupina,
-#           text = ~paste(name))
-   
 
 # INFO TABULKA ------------------------------------------------------------
 

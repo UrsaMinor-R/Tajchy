@@ -143,23 +143,32 @@ tabItem(tabName = "grafy",
         box(width=12,
             title = "2D a 3D Grafy",
             tabBox(width=12,id="tabBox_next_previous",
-                   
-                   tabPanel("2D GRAF",p("This is tab 1")
-          
+
+                  # 2D graf -----------------------------------------------------------------
+                   tabPanel("2D GRAF",
+                            
+                            radioButtons("plotType", "Plot Type:", choices = c("ggplotly", "plotly")),
+                            plotlyOutput("plot2d"),
+                            verbatimTextOutput("hover2d"),
+                            verbatimTextOutput("click2d"),
+                            verbatimTextOutput("brush2d"),
+                            verbatimTextOutput("zoom2d")
+
+                          
                             ),
 
-# 3D graf -----------------------------------------------------------------
-                   tabPanel("3D GRAF",p("This is tab 2"),
+                  # 3D graf -----------------------------------------------------------------
+                   tabPanel("3D GRAF",
                             
-                            plotlyOutput("plot"),
-                            verbatimTextOutput("hover"),
-                            verbatimTextOutput("click")
+                            plotlyOutput("plot3d"),
+                            verbatimTextOutput("hover3d"),
+                            verbatimTextOutput("click3d")
                             
                             )
             )
         )
         
-        ),
+        ), #koniec Tabname Grafy
 
 
 
