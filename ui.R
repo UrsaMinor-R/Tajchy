@@ -144,21 +144,23 @@ tabItem(tabName = "grafy",
                             
                             radioButtons("plotType", "Plot Type:", choices = c("ggplotly", "plotly")),
                             plotlyOutput("plot2d"),
+                            br(),  br(),
+                            
                             verbatimTextOutput("hover2d"),
                             verbatimTextOutput("click2d"),
                             verbatimTextOutput("brush2d"),
                             verbatimTextOutput("zoom2d"),
                             
-                            absolutePanel(id = "controlGRAF", top = 155, bottom = "auto", left = 1320, right = "auto", 
+                            absolutePanel(id = "controlGRAF", top = 155, bottom = "auto", left = 1480, right = "auto", 
                                           width="15%", height = "auto",
                                           fixed = TRUE, draggable = FALSE,
                                           
-                                          selectInput("x2d", "vyber hodnotu Xovej osi", choices = names(dtTajchy), 
-                                                      selected = ""),
-                                          selectInput("y2d", "vyber hodnotu Yovej osi", choices = names(dtTajchy), 
-                                                      selected = ""),
-                                          selectInput("z2d", "vyber farebne rozlisenie", choices = names(dtTajchy), 
-                                                      selected = ""),
+                                          selectInput(inputId ="x2d", "vyber hodnotu Xovej osi", choices = namesTajchy, 
+                                                      selected = "x"),
+                                          selectInput(inputId ="y2d", "vyber hodnotu Yovej osi", choices = namesTajchy, 
+                                                      selected = "y"),
+                                          selectInput(inputId ="farba2d", "vyber farebne rozlisenie", choices = namesTajchy, 
+                                                      selected = "skupina"),
                                           
                                           br(),
                                           
@@ -173,8 +175,30 @@ tabItem(tabName = "grafy",
                    tabPanel("3D GRAF",
                             
                             plotlyOutput("plot3d"),
+                            br(), br(),
                             verbatimTextOutput("hover3d"),
-                            verbatimTextOutput("click3d")
+                            verbatimTextOutput("click3d"),
+                            
+                            absolutePanel(id = "controlGRAF3d", top = 155, bottom = "auto", left = 1480, right = "auto", 
+                                          width="15%", height = "auto",
+                                          fixed = TRUE, draggable = FALSE,
+                                          
+                                          selectInput(inputId ="x3d", "Zvoľ element pre X-ovú os", choices = namesTajchy, 
+                                                      selected = "x"),
+                                          selectInput(inputId ="y3d", "Zvoľ element pre Y-ovú os", choices = namesTajchy, 
+                                                      selected = "y"),
+                                          selectInput(inputId ="z3d", "Zvoľ element pre Z-ovú os", choices = namesTajchy, 
+                                                      selected = "nadmVyska"),
+                                          selectInput(inputId ="farba3d", "Zvoľ element pre farebné rozlíšenie", choices = namesTajchy, 
+                                                      selected = "skupina"),
+                                          
+                                          
+                                          br(),
+                                          
+                                          
+                                          
+                                          actionButton("update", "Update Map!"),
+                                          style = "opacity: 0.85; z-index: 10;" )
                             
                             ),
                   
