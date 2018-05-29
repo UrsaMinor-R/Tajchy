@@ -27,8 +27,8 @@ sidebar <- dashboardSidebar(
   sidebarMenu(id="tabs",
               # POLOZKY SIDEBAR  MENU ------------------------------------------------------------
               menuItem("Interaktívna mapa", tabName = "mapa", icon = icon("map"), selected=TRUE),
-              menuItem("Grafy",  tabName = "grafy",icon = icon("line-chart"),
-                       badgeLabel = "new", badgeColor = "green"),
+              menuItem("Grafy",  tabName = "grafy",icon = icon("line-chart")),
+                       #badgeLabel = "new", badgeColor = "green"),
               
               menuItem("Zdrojový kód", icon = icon("file-code-o"), 
                        href = "https://github.com/UrsaMinor-R/Tajchy"),
@@ -128,21 +128,16 @@ body <- dashboardBody(
 
 tabItem(tabName = "grafy",
         
-        # tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}"),
-        # fluidRow(
-        #   tabBox(
-        #     width = 12,
-        #     title = "2D a 3D Grafy",
-        #     # The id lets us use input$tabset1 on the server to find the current tab
-        #     id = "tabset1", height = "250px",
-        #     tabPanel("Tab1", "2D Graf"),
-        #     tabPanel("Tab2", "3D Graf")
-        #   )
-        # )
-        
+
         box(width=12,
             title = "2D a 3D Grafy",
-            tabBox(width=12,id="tabBox_next_previous",
+            
+            fluidRow(
+              column(9,
+                     
+                    
+            tabBox(width=12, height = "100%",
+                   id="tabBox_next_previous",
 
                   # 2D graf -----------------------------------------------------------------
                    tabPanel("2D GRAF",
@@ -154,7 +149,6 @@ tabItem(tabName = "grafy",
                             verbatimTextOutput("brush2d"),
                             verbatimTextOutput("zoom2d")
 
-                          
                             ),
 
                   # 3D graf -----------------------------------------------------------------
@@ -164,23 +158,23 @@ tabItem(tabName = "grafy",
                             verbatimTextOutput("hover3d"),
                             verbatimTextOutput("click3d")
                             
-                            )
-            )
+                            ),
+                  
+                  tabPanel("Datatable",
+                           
+                           h1("Plotly & DT", align = "center"),
+                           plotlyOutput("x2"),
+                           DT::dataTableOutput("x1"),
+                           fluidRow(
+                             p(class = 'text-center', downloadButton('x3', 'Download Filtered Data'))
+                           )
+                           
+                           )
+            )))
         )
         
-        ), #koniec Tabname Grafy
+        ) #koniec TabItem Grafy
 
-
-
-
-
-
-# OBSAH KARTY - GRAFY -----------------------------------------------------
-tabItem(tabName = "grafy",
-        h3("2D a 3D Vizualizácia")
-        
-        
-        )
 
   
 )
