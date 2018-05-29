@@ -58,7 +58,7 @@ sidebar <- dashboardSidebar(
                                                                                   "Kolpaššské"="kolpasske",
                                                                                   "Moderštôlnianske"="modersolnianske",
                                                                                   "Pukanské"="pukanske"),
-                                                    selectize = TRUE,  selected = "celySystem", multiple = TRUE),
+                                                    selectize = TRUE,  selected = "celySystem", multiple = FALSE),
 
                                                     # ROZSAH - input$range
                                                     sliderInput("range", "Rok:",

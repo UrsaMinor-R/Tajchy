@@ -14,11 +14,12 @@ shpTajchy <- readOGR(".",'tajchy_tab')
 # ogrInfo(".",'polyline')
 shpTajchy <- spTransform(shpTajchy, CRS("+proj=longlat +datum=WGS84 +no_defs"))
 dtTajchy <- data.table::setDT(as.data.frame(shpTajchy))
+namesTajchy <- names(dtTajchy)
 
 min_date <- min(as.numeric(as.character(shpTajchy$vznik)))
 max_date <- max(as.numeric(as.character(shpTajchy$vznik)))
 
 shpTajchy$vznik <- zoo::as.Date(zoo::as.yearmon(shpTajchy$vznik, "%Y"), origin = "1960-01-01")
 
-m <- mtcars %>% 
-  tibble::rownames_to_column()
+# m <- mtcars %>% 
+#   tibble::rownames_to_column()
