@@ -60,18 +60,26 @@ shinyServer(function(input, output, session) {
   # plot(shpTajchy[shpTajchy$skupina=='belianske', ])
   
 
-# GRAFY -------------------------------------------------------------------
+# GRAFY a TABULKA-------------------------------------------------------------------
+
+# 2D graf - PLOTLY 2D SCATTERPLOT -----------------------------------------------------------------
 
 
-# 3D GRAF -----------------------------------------------------------------
-# 
+
+# 3D graf - PLOTLY 3D SCATTERPLOT -----------------------------------------
+
+  
+
+# DATATABLE ---------------------------------------------------------------
+
+
 #   plot_ly(dtTajchy, type = "scatter3d",
 #           x = ~x, y = ~y,z = ~nadmVyska,
 #           mode = "markers",
 #           symbol = ~skupina,
 #           color = ~skupina,
 #           text = ~paste(name))
-#   
+   
 
 # INFO TABULKA ------------------------------------------------------------
 
@@ -88,5 +96,5 @@ shinyServer(function(input, output, session) {
   
   
 #   
-  
+
 })

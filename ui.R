@@ -147,16 +147,17 @@ tabItem(tabName = "grafy",
                    tabPanel("2D GRAF",p("This is tab 1")
           
                             ),
-                   
+
+# 3D graf -----------------------------------------------------------------
                    tabPanel("3D GRAF",p("This is tab 2"),
                             
                             plotlyOutput("plot"),
                             verbatimTextOutput("hover"),
                             verbatimTextOutput("click")
+                            
                             )
             )
         )
-        
         
         ),
 
