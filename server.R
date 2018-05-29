@@ -106,13 +106,21 @@ shinyServer(function(input, output, session) {
 
   
 # 3D GRAF - plotly 3D scatterplot -----------------------------------------
+  
+  dataset3d <- reactive({
+    dt <- dtTajchy %>%
+      select(input$x2d, input$y2d, input$z3d, input$farba3d)
+  })
+  
+  
+  
   output$plot3d <- renderPlotly({
     
-    plot_ly(dtTajchy, x = ~x, y = ~y, z = ~nadmVyska, type = "scatter3d",
-    #mode = "markers",
-    symbol = ~skupina,
-    color = ~skupina,
-    text = ~paste(name)) 
+    plot_ly(dataset3d(), x = ~dataset3d()[[1]], y = ~dataset3d()[[2]], z = ~dataset3d()[[3]], type = "scatter3d",
+    mode = "markers",
+    # symbol = ~skupina,
+    color = ~dataset3d()[[4]])
+    # text = ~paste(name)) 
   
   })
   
