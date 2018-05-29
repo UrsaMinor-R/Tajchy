@@ -59,18 +59,27 @@ shinyServer(function(input, output, session) {
 
 # 2D GRAF - plotly 3D scatterplot --------------------------------------------------
   
+  dataset2d <- reactive({
+  dt <- dtTajchy %>%
+      select(input$x2d, input$y2d, input$farba2d)
+  })
+  
+  
   output$plot2d <- renderPlotly({
-    # use the key aesthetic/argument to help uniquely identify selected observations
-    key <- row.names(mtcars)
+    
     if (identical(input$plotType, "ggplotly")) {
-      p <- ggplot(mtcars, aes(x = mpg, y = wt, colour = factor(vs), key = key)) + 
+      
+      p <- ggplot(data = dataset2d(), aes(x = dataset2d()[[1]], y = dataset2d()[[2]], colour = dataset2d()[[3]])) + 
         geom_point()
+      
       ggplotly(p) %>% layout(dragmode = "select")
+      
     } else {
-      plot_ly(mtcars, x = ~mpg, y = ~wt, key = ~key) %>%
+      plot_ly(dataset2d(), x = ~dataset2d()[[1]], y = ~dataset2d()[[2]]) %>%
         layout(dragmode = "select")
     }
   })
+  
   
   output$hover2d <- renderPrint({
     d <- event_data("plotly_hover")

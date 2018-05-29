@@ -26,8 +26,8 @@ sidebar <- dashboardSidebar(
   
   sidebarMenu(id="tabs",
               # POLOZKY SIDEBAR  MENU ------------------------------------------------------------
-              menuItem("Interaktívna mapa", tabName = "mapa", icon = icon("map"), selected=TRUE),
-              menuItem("Grafy",  tabName = "grafy",icon = icon("line-chart")),
+              menuItem("Interaktívna mapa", tabName = "mapa", icon = icon("map")),
+              menuItem("Grafy",  tabName = "grafy",icon = icon("line-chart"), selected=TRUE),
                        #badgeLabel = "new", badgeColor = "green"),
               
               menuItem("Zdrojový kód", icon = icon("file-code-o"), 
@@ -147,7 +147,25 @@ tabItem(tabName = "grafy",
                             verbatimTextOutput("hover2d"),
                             verbatimTextOutput("click2d"),
                             verbatimTextOutput("brush2d"),
-                            verbatimTextOutput("zoom2d")
+                            verbatimTextOutput("zoom2d"),
+                            
+                            absolutePanel(id = "controlGRAF", top = 155, bottom = "auto", left = 1320, right = "auto", 
+                                          width="15%", height = "auto",
+                                          fixed = TRUE, draggable = FALSE,
+                                          
+                                          selectInput("x2d", "vyber hodnotu Xovej osi", choices = names(dtTajchy), 
+                                                      selected = ""),
+                                          selectInput("y2d", "vyber hodnotu Yovej osi", choices = names(dtTajchy), 
+                                                      selected = ""),
+                                          selectInput("z2d", "vyber farebne rozlisenie", choices = names(dtTajchy), 
+                                                      selected = ""),
+                                          
+                                          br(),
+                                          
+                                          
+                                          
+                                          actionButton("update", "Update Map!"),
+                                          style = "opacity: 0.85; z-index: 10;" )
 
                             ),
 
@@ -170,7 +188,20 @@ tabItem(tabName = "grafy",
                            )
                            
                            )
-            )))
+            ))
+            
+
+            
+            
+            # , column(2,
+            #        wellPanel(
+            #          sliderInput("obs", "Number of observations:",  
+            #                      min = 1, max = 1000, value = 500)
+            #        ))
+            
+            
+            )
+
         )
         
         ) #koniec TabItem Grafy
