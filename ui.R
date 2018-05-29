@@ -151,15 +151,15 @@ tabItem(tabName = "grafy",
                             verbatimTextOutput("brush2d"),
                             verbatimTextOutput("zoom2d"),
                             
-                            absolutePanel(id = "controlGRAF", top = 155, bottom = "auto", left = 1480, right = "auto", 
+                            absolutePanel(id = "controlGRAF", top = 161, bottom = "auto", left = "auto", right = "7%", 
                                           width="15%", height = "auto",
                                           fixed = TRUE, draggable = FALSE,
                                           
-                                          selectInput(inputId ="x2d", "vyber hodnotu Xovej osi", choices = namesTajchy, 
+                                          selectInput(inputId ="x2d", "Zvoľ element pre X-ovú os", choices = namesTajchy, 
                                                       selected = "x"),
-                                          selectInput(inputId ="y2d", "vyber hodnotu Yovej osi", choices = namesTajchy, 
+                                          selectInput(inputId ="y2d", "Zvoľ element pre Y-ovú os", choices = namesTajchy, 
                                                       selected = "y"),
-                                          selectInput(inputId ="farba2d", "vyber farebne rozlisenie", choices = namesTajchy, 
+                                          selectInput(inputId ="farba2d", "Zvoľ element pre farebné rozlíšenie", choices = namesTajchy, 
                                                       selected = "skupina"),
                                           
                                           br(),
@@ -179,7 +179,7 @@ tabItem(tabName = "grafy",
                             verbatimTextOutput("hover3d"),
                             verbatimTextOutput("click3d"),
                             
-                            absolutePanel(id = "controlGRAF3d", top = 155, bottom = "auto", left = 1480, right = "auto", 
+                            absolutePanel(id = "controlGRAF3d",top = 161, bottom = "auto", left = "auto", right = "7%", 
                                           width="15%", height = "auto",
                                           fixed = TRUE, draggable = FALSE,
                                           
@@ -209,7 +209,26 @@ tabItem(tabName = "grafy",
                            DT::dataTableOutput("x1"),
                            fluidRow(
                              p(class = 'text-center', downloadButton('x3', 'Download Filtered Data'))
-                           )
+                           ),
+                           
+                           absolutePanel(id = "controldataTable", top = 161, bottom = "auto", left = "auto", right = "7%", 
+                                         width="15%", height = "auto",
+                                         fixed = TRUE, draggable = FALSE,
+                                         
+                                         selectInput(inputId ="xDT", "Zvoľ element pre X-ovú os", choices = namesTajchy, 
+                                                     selected = "x"),
+                                         selectInput(inputId ="yDT", "Zvoľ element pre Y-ovú os", choices = namesTajchy, 
+                                                     selected = "y"),
+                                         selectInput(inputId ="farbaDT", "Zvoľ element pre farebné rozlíšenie", choices = namesTajchy, 
+                                                     selected = "skupina"),
+                                         
+                                         br(),
+                                         
+                                         
+                                         
+                                         actionButton("update", "Update Map!"),
+                                         style = "opacity: 0.85; z-index: 10;" )
+                           
                            
                            )
             ))
