@@ -34,73 +34,46 @@ shinyServer(function(input, output, session) {
   
   
 # LEAFLET -----------------------------------------------------------------
-  # zoom <- reactiveValues(lng=18.91, lat=48.452, zoom=13)
-  # 
-  # observeEvent(input$skupina,{
-  #   a <- input$skupina
-  #   if (a == "belianske") {
-  #     zoom$lng <- 18.932
-  #     zoom$lat <- 48.468
-  #     zoom$zoom <- 14}
-  # 
-  # })
-  # 
-  # validate(
-  #   need(input$skupina != "", "Please select a data set")
-  # )
-  # 
-  # tags$head(
-  #   tags$style(HTML("
-  #     .shiny-output-error-validation {
-  #       color: green;
-  #     }
-  #   "))
-  # ),
-  # 
-  # zoom <- reactive({
-  #   req(input$skupina)
-  #   if (input$skupina == "belianske") {
-  #     zoom <- c(18.932, 48.468, 14)}
-  #   if (input$skupina == "piargske") {
-  #     zoom <- c(18.55, 48.42, 14)}
-  #   if (input$skupina == "hodrusske") {
-  #     zoom <- c(18.52, 48.46, 14)}
-  #   if (input$skupina == "vyhnianske") {
-  #     zoom <- c(18.867, 48.47, 14)}
-  #   if (input$skupina == "kolpasske") {
-  #     zoom <- c(18.977, 48.448, 14)}
-  #   if (input$skupina == "pukanske") {
-  #     zoom <- c(18.779, 48.399, 15)}
-  #   else {
-  #     zoom <- c(18.91, 48.452, 13)
-  #   }
-  # })
-  
+
   output$map <- renderLeaflet({
 
     input$update   # catching the action button event
     isolate(leaflet() %>%
               addProviderTiles(input$bmap)) %>%
-      
-      # setView(lng = 18.91, lat = 48.452, zoom = 13 ) %>%
-      addPolygons(
-        data = shp_selected(),
-        weight = 2,
-        col = 'blue',
-        label = shp_selected()$name
-      ) %>%
+  
       # addMarkers(lng = 18.9, lat = 48.46, popup = "Hi there")%>%
       mapOptions(zoomToLimits = "always")
   })
+  
+  # setView(lng = 18.91, lat = 48.452, zoom = 13 ) %>%
+
   # 
-  # rezoom <- "first"
-  # # If zoom button was clicked this time, and store the value, and rezoom
-  # if (!identical(lastZoomButtonValue, input$zoomButton)) {
-  #   lastZoomButtonValue <<- input$zoomButton
-  #   rezoom <- "always"
-  # }
- 
-  # map
+  observe({
+    
+    x <- input$checkbox
+
+    # Can use character(0) to remove all choices
+    if (!exists(x))
+      
+      output$map <- renderLeaflet({
+        
+        input$update   # catching the action button event
+        isolate(leaflet() %>%
+                  addProviderTiles(input$bmap)) %>%
+          addPolygons(
+            data = shp_selected(),
+            weight = 1,
+            col = 'blue',
+            label = shp_selected()$name
+          )
+          
+          # addMarkers(lng = 18.9, lat = 48.46, popup = "Hi there")%>%
+          mapOptions(zoomToLimits = "always")
+      })
+    
+  })
+  
+  # https://github.com/rstudio/shiny-examples/blob/master/086-bus-dashboard/server.R
   
   # a <- shpTajchy@polygons[[2]]@Polygons[[1]]@coords
   # 
@@ -266,3 +239,17 @@ shinyServer(function(input, output, session) {
 #   
 
 })
+
+
+# validate(
+#   need(input$skupina != "", "Please select a data set")
+# )
+# 
+# tags$head(
+#   tags$style(HTML("
+#     .shiny-output-error-validation {
+#       color: green;
+#     }
+#   "))
+# ),
+# 

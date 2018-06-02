@@ -2,7 +2,7 @@
 
 header <- dashboardHeader(title = "BanskoŠtiavnické Tajchy",
                           titleWidth = 244,
-                          dropdownMenu(type = "messages",
+                          dropdownMenu(type = "messages", 
                                        messageItem(
                                          from = "Sales Dept",
                                          message = "Sales are steady this month."
