@@ -9,10 +9,20 @@ lapply(list.of.packages,function(x){library(x,character.only=TRUE)})
 
 # ZDROJOVE DATA -----------------------------------------------------------
 
-shapeData <- readOGR(".",'polyline')
 shpTajchy <- readOGR(".",'tajchy_tab')
+shpJarky <- readOGR(".",'jarky')
+shpStolne <- readOGR(".",'stolne')
+shpStolneVodne <- readOGR(".",'vodneStolne')
+shpPingy <- readOGR(".",'pingy')
+
+
 # ogrInfo(".",'polyline')
 shpTajchy <- spTransform(shpTajchy, CRS("+proj=longlat +datum=WGS84 +no_defs"))
+shpJarky <- spTransform(shpJarky, CRS("+proj=longlat +datum=WGS84 +no_defs"))
+shpStolne <- spTransform(shpStolne, CRS("+proj=longlat +datum=WGS84 +no_defs"))
+shpStolneVodne <- spTransform(shpStolneVodne, CRS("+proj=longlat +datum=WGS84 +no_defs"))
+shpPingy <- spTransform(shpPingy, CRS("+proj=longlat +datum=WGS84 +no_defs"))
+
 dtTajchy <- data.table::setDT(as.data.frame(shpTajchy))
 namesTajchy <- names(dtTajchy)
 

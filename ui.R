@@ -2,7 +2,7 @@
 
 header <- dashboardHeader(title = "BanskoŠtiavnické Tajchy",
                           titleWidth = 244,
-                          dropdownMenu(type = "messages", 
+                          dropdownMenu(type = "messages",
                                        messageItem(
                                          from = "Sales Dept",
                                          message = "Sales are steady this month."
@@ -26,8 +26,8 @@ sidebar <- dashboardSidebar(
   
   sidebarMenu(id="tabs",
               # POLOZKY SIDEBAR  MENU ------------------------------------------------------------
-              menuItem("Interaktívna mapa", tabName = "mapa", icon = icon("map")),
-              menuItem("Grafy",  tabName = "grafy",icon = icon("line-chart"), selected=TRUE),
+              menuItem("Interaktívna mapa", tabName = "mapa", icon = icon("map"), selected=TRUE),
+              menuItem("Grafy",  tabName = "grafy",icon = icon("line-chart")),
                        #badgeLabel = "new", badgeColor = "green"),
               
               menuItem("Zdrojový kód", icon = icon("file-code-o"), 
@@ -64,11 +64,13 @@ sidebar <- dashboardSidebar(
                                                     sliderInput("range", "Rok:",
                                                                 min_date, max_date, value = max_date, animate = TRUE, step = 30),
               
-              # checkboxGroupInput("checkbox", "Objects to show:",
-              #                    c("Tajchy" = "tjch",
-              #                      "Jarky" = "jrk",
-              #                      "Štôlne" = "stl"),
-              #                    selected = "tjch"), 
+              checkboxGroupInput("checkbox", "Objects to show:",
+                                 c("Tajchy" = "shpTajchy",
+                                   "Jarky" = "shpJarky",
+                                   "Štôlne" = "shpStolne",
+                                 "Vodné štôlne" = "shpStolneVodne",
+                                 "Pingy" = "shpPingy"),
+                                 selected = "shpTajchy"),
               
               radioButtons("radio", "Typ analýzy:", c("Historická", "Súčasná")))),
               

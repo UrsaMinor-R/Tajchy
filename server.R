@@ -40,38 +40,44 @@ shinyServer(function(input, output, session) {
     input$update   # catching the action button event
     isolate(leaflet() %>%
               addProviderTiles(input$bmap)) %>%
+      addPolygons(
+        data = shp_selected(),
+        weight = 1,
+        col = 'blue',
+        label = shp_selected()$name
+      ) %>%
+      
+      addPolylines(
+        data = shpJarky,
+        weight = 1,
+        col = 'blue',
+        label = shpJarky$name
+      ) %>%
+      
+       
+      addPolylines(
+        data = shpStolneVodne,
+        weight = 2,
+        col = 'green'
+      ) %>%
+      
+      addLegend("bottomright", colors= "#ffa500", labels="Dunkin'", title="In Connecticut") %>%
   
-      # addMarkers(lng = 18.9, lat = 48.46, popup = "Hi there")%>%
+      # addMarkers(lng = shpPingy@coords[,1], lat = shpPingy@coords[,2] )%>%
+      addCircles(lng = shpPingy@coords[,1], lat = shpPingy@coords[,2],
+                 weight = 1, radius=5, 
+                 color="#ffa500", stroke = TRUE, fillOpacity = 0.8) %>%
+      mapOptions(zoomToLimits = "always") %>%
+    
+    addCircles(lng = shpStolne@coords[,1], lat = shpStolne@coords[,2],
+               weight = 1, radius=8, 
+               color="red", stroke = TRUE, fillOpacity = 0.8) %>%
+      
       mapOptions(zoomToLimits = "always")
   })
   
   # setView(lng = 18.91, lat = 48.452, zoom = 13 ) %>%
 
-  # 
-  observe({
-    
-    x <- input$checkbox
-
-    # Can use character(0) to remove all choices
-    if (!exists(x))
-      
-      output$map <- renderLeaflet({
-        
-        input$update   # catching the action button event
-        isolate(leaflet() %>%
-                  addProviderTiles(input$bmap)) %>%
-          addPolygons(
-            data = shp_selected(),
-            weight = 1,
-            col = 'blue',
-            label = shp_selected()$name
-          )
-          
-          # addMarkers(lng = 18.9, lat = 48.46, popup = "Hi there")%>%
-          mapOptions(zoomToLimits = "always")
-      })
-    
-  })
   
   # https://github.com/rstudio/shiny-examples/blob/master/086-bus-dashboard/server.R
   
