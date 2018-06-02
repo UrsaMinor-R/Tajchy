@@ -34,47 +34,90 @@ shinyServer(function(input, output, session) {
   
   
 # LEAFLET -----------------------------------------------------------------
-
+  # output$map <- renderLeaflet({ leaflet() %>% 
+  #     addTiles() %>% 
+  #     setView(6.45471, 50.71, zoom = 14)})
+  # 
+  
   output$map <- renderLeaflet({
 
     input$update   # catching the action button event
     isolate(leaflet() %>%
               addProviderTiles(input$bmap)) %>%
-      addPolygons(
-        data = shp_selected(),
-        weight = 1,
-        col = 'blue',
-        label = shp_selected()$name
-      ) %>%
-      
-      addPolylines(
-        data = shpJarky,
-        weight = 1,
-        col = 'blue',
-        label = shpJarky$name
-      ) %>%
-      
-       
-      addPolylines(
-        data = shpStolneVodne,
-        weight = 2,
-        col = 'green'
-      ) %>%
-      
-      addLegend("bottomright", colors= "#ffa500", labels="Dunkin'", title="In Connecticut") %>%
+      setView(lng = 18.91, lat = 48.452, zoom = 13)})
   
-      # addMarkers(lng = shpPingy@coords[,1], lat = shpPingy@coords[,2] )%>%
-      addCircles(lng = shpPingy@coords[,1], lat = shpPingy@coords[,2],
-                 weight = 1, radius=5, 
-                 color="#ffa500", stroke = TRUE, fillOpacity = 0.8) %>%
-      mapOptions(zoomToLimits = "always") %>%
+  
+  observe({
     
-    addCircles(lng = shpStolne@coords[,1], lat = shpStolne@coords[,2],
-               weight = 1, radius=8, 
-               color="red", stroke = TRUE, fillOpacity = 0.8) %>%
+    # Create map
+    map <- leafletProxy("map")
+    map %>% clearShapes()
+    
+    # Get select inputs
+    shpSelect <- input$shpSelect # the function is triggered when the select option changes
+    
+    if (length(shpSelect) > 0) {
+      if ('shpTajchy' %in% shpSelect) {
+        # density <- input$density # triggers this function when you update density
+        
+        # "sample" the linestring according to selected density
+        # linetrack <- track_data %>%
+        #   sf::st_line_sample(density = 1/density, type = "regular") %>%
+        #   sf::st_transform(4326) %>% 
+        #   st_cast("LINESTRING")
+        
+        leafletProxy("map")  %>% addPolylines(data = shpTajchy,
+                                              weight = 1,
+                                                    col = 'blue',
+                                                    label = shpTajchy$name)
+      }
+
+      if ('shpJarky' %in% shpSelect) {
+
+        leafletProxy("map")  %>% addPolylines(data = shpJarky,
+                                              weight = 1,
+                                              col = 'blue')}
       
-      mapOptions(zoomToLimits = "always")
+      if ('shpStolneVodne' %in% shpSelect) {
+        
+        leafletProxy("map")  %>% addPolylines(data = shpStolneVodne,
+                                              weight = 2,
+                                              col = 'green')}
+      
+      if ('shpStolne' %in% shpSelect) {
+        
+        leafletProxy("map")  %>%   addCircles(lng = shpStolne@coords[,1], lat = shpStolne@coords[,2],
+                                              weight = 1, radius=8,
+                                              color="red", stroke = TRUE, fillOpacity = 0.8)}
+      
+      if ('shpPingy' %in% shpSelect) {
+        
+        leafletProxy("map")  %>% addCircles(lng = shpPingy@coords[,1], lat = shpPingy@coords[,2],
+                                                              weight = 1, radius=5,
+                                                              color="#ffa500", stroke = TRUE, fillOpacity = 0.8)}
+      
+      
+    }
+    
+    
+    
   })
+      
+
+
+  #     
+  #     addLegend("bottomright", colors= "#ffa500", labels="Dunkin'", title="In Connecticut") %>%
+  # 
+      # addMarkers(lng = shpPingy@coords[,1], lat = shpPingy@coords[,2] )%>%
+
+  #     mapOptions(zoomToLimits = "always") %>%
+  #   
+  #   addCircles(lng = shpStolne@coords[,1], lat = shpStolne@coords[,2],
+  #              weight = 1, radius=8, 
+  #              color="red", stroke = TRUE, fillOpacity = 0.8) %>%
+  #     
+  #     mapOptions(zoomToLimits = "always")
+  # })
   
   # setView(lng = 18.91, lat = 48.452, zoom = 13 ) %>%
 
