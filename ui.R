@@ -1,40 +1,92 @@
 # https://plot.ly/r/shinyapp-3d-events/
 
-header <- dashboardHeader(title = "BanskoŠtiavnické Tajchy",
-                          titleWidth = 244,
-                          dropdownMenu(type = "messages",
-                                       messageItem(
-                                         from = "Sales Dept",
-                                         message = "Sales are steady this month."
-                                       ),
-                                       messageItem(
-                                         from = "New User",
-                                         message = "How do I register?",
-                                         icon = icon("question"),
-                                         time = "13:45"
-                                       ),
-                                       messageItem(
-                                         from = "Support",
-                                         message = "The new server is ready.",
-                                         icon = icon("life-ring"),
-                                         time = "2014-12-01"
-                                       )
-                          )
+
+header <- dashboardHeader(
+  
+  # includeCSS('styles.css'),
+
+  tags$li(
+  class = "dropdown",
+  tags$style(
+    ".wrapper {overflow-y: hidden;}",
+    ".main-header {max-height: 100px !important;
+                      font-size:14px; 
+                      font-weight:bold; 
+                      line-height:10px;}"),
+  
+  tags$style(
+    ".main-header .logo {height: 40px;
+                             padding: 0px 0px;
+                             font-size:14px; 
+                             font-weight:bold; 
+                            line-height: 45px !important;
+                            padding: 0 0px;}"),
+  tags$style(
+    ".sidebar-toggle {
+      float: right !important;
+    }")
+  ),
+  
+
+    
+title = HTML(
+  "<div style = 'background-color:#FFFFFF; vertical-align:middle'>
+       <img src = 'logo_tajchy.png' align = 'left' height = '40px'>
+        TAJCHY INFOWEB
+       </div>"),
+titleWidth = "97%"
 )
 
+
 sidebar <- dashboardSidebar(
+  tags$style(type = "text/css",
+             "label { font-size: 12px; }"
+  ),
   
-  sidebarMenu(id="tabs",
+  tags$style(
+  ".selectize-input { font-size: 10px; line-height: 13px;}",
+  ".selectize-dropdown { font-size: 10px; line-height: 13px;}"
+  ),
+  
+  
+  width = "15%",
+  
+  # tags$head(tags$style(HTML('.info-box {min-height: 10px;} .info-box-icon {height: 10px; line-height: 10px;} .info-box-content {padding-top: 0px; padding-bottom: 0px;}'))),
+  
+# tags$head(tags$style(HTML('
+#       .main-header .logo {
+#         font-family: "Georgia", Times, "Times New Roman", serif;
+#         font-weight: bold;
+#         font-size: 13px;
+#       }
+#     '))),
+  # h1("New Application", 
+  #    style = "font-family: 'Lobster', cursive;
+  #    font-weight: 500; line-height: 1.1; 
+  #    color: #4d3a7d;"))
+
+  sidebarMenu(
+    tags$style(
+    ".main-sidebar {float:top; margin-top:0px; padding-left:5px; padding-right:15px}"
+  ),
+  
+  id="tabs",
               # POLOZKY SIDEBAR  MENU ------------------------------------------------------------
-              menuItem("Interaktívna mapa", tabName = "mapa", icon = icon("map"), selected=TRUE),
-              menuItem("Grafy",  tabName = "grafy",icon = icon("line-chart")),
+              menuItem(span("Interaktívna mapa", style="color:#9400D3;
+                            font-size: 12px"), tabName = "mapa", icon = icon("map"), selected=TRUE),
+  
+              menuItem(span("Grafy",style="color:#DA70D6;
+                            font-size: 12px"),  tabName = "grafy",icon = icon("line-chart")),
                        #badgeLabel = "new", badgeColor = "green"),
-              
-              menuItem("Zdrojový kód", icon = icon("file-code-o"), 
+  
+              menuItem(span("Zdrojový kód",style="color:#00BFFF;
+                            font-size: 12px"), icon = icon("file-code-o"), 
                        href = "https://github.com/UrsaMinor-R/Tajchy"),
-              menuItem("About Autors", icon = icon("github-alt"), 
+  
+              menuItem(span("Autori",style="color:#00FFFF;
+                            font-size: 12px"), icon = icon("github-alt"), 
                        href = "https://github.com/UrsaMinor-R/Tajchy"),
-              br(), hr(),
+              # hr(),
               
               
               
@@ -44,12 +96,14 @@ sidebar <- dashboardSidebar(
                                  column(1),
                                  column(11,
                                         # VYHLADAVAC
-                                        sidebarSearchForm(textId = "searchText", buttonId = "searchButton",
-                                                          label = "Search..."),
-                                        
+                                        # sidebarSearchForm(textId = "searchText", buttonId = "searchButton",
+                                        #                   label = "Search..."),
+                                        # 
                                         # # VYBER SKUPINY VHS
                                         selectInput(inputId ="skupina",
-                                                    label = "Skupina tajchov:", c("Celý systém" = "celySystem",
+                                                    label = span("Skupina tajchov:",style="color:#FFFFFF;
+                                                   font-size: 12px"),  
+                                                                                  c("Celý systém" = "celySystem",
                                                                                   "Piargske" = "piargske",
                                                                                   "Štiavnické"="stiavnicke",
                                                                                   "Hodrušské"="hodrusske",
@@ -61,10 +115,10 @@ sidebar <- dashboardSidebar(
                                                     selectize = TRUE,  selected = "celySystem", multiple = FALSE),
 
                                                     # ROZSAH - input$range
-                                                    sliderInput("range", "Rok:",
-                                                                min_date, max_date, value = max_date, animate = TRUE, step = 30),
+                                                    # sliderInput("range", "Rok:",
+                                                    #             min_date, max_date, value = max_date, animate = TRUE, step = 30),
               
-              checkboxGroupInput("checkbox", "Objects to show:",
+              checkboxGroupInput("shpSelect", "Objects to show:",
                                  c("Tajchy" = "shpTajchy",
                                    "Jarky" = "shpJarky",
                                    "Štôlne" = "shpStolne",
@@ -77,9 +131,9 @@ sidebar <- dashboardSidebar(
 
               # BUILD IN: ---------------------------------------------------------------
               h5("Built with",
-                 img(src = "https://stevenmortimer.com/blog/tips-for-making-professional-shiny-apps-with-r/shiny-hex.png", height = "30px"),
+                 img(src = "https://stevenmortimer.com/blog/tips-for-making-professional-shiny-apps-with-r/shiny-hex.png", height = "20px"),
                  "by",
-                 img(src = "https://www.rstudio.com/wp-content/uploads/2014/07/RStudio-Logo-Blue-Gray.png", height = "30px"),
+                 img(src = "https://www.rstudio.com/wp-content/uploads/2014/07/RStudio-Logo-Blue-Gray.png", height = "20px"),
                  "."))
               # 
               # tags$div(class="header", checked=NA,
@@ -90,6 +144,11 @@ sidebar <- dashboardSidebar(
               ))
 
 body <- dashboardBody(
+  
+  tags$style(type = "text/css",
+             "label { font-size: 12px; }"
+  ),
+  
   tabItems(
     # OBSAH KARTY - GRAFY -----------------------------------------------------
     tabItem(tabName = "mapa",
@@ -200,7 +259,7 @@ tabItem(tabName = "grafy",
                                           
                                           
                                           actionButton("update", "Update Map!"),
-                                          style = "opacity: 0.85; z-index: 10;" )
+                                          style = "opacity: 0.85; z-index: 10; font-size:12px;" )
                             
                             ),
                   
@@ -260,7 +319,8 @@ tabItem(tabName = "grafy",
 
 
 # DASHBOARD UI ------------------------------------------------------------
-ui <- dashboardPage(header = header,
+ui <- dashboardPage(skin = "black",
+                    header = header,
                     sidebar = sidebar,
                     body = body)
 # ---------------------------------------------------------------------------
@@ -273,19 +333,7 @@ ui <- dashboardPage(header = header,
 #                    img(src = "https://www.rstudio.com/wp-content/uploads/2014/07/RStudio-Logo-Blue-Gray.png", height = "30px"),
 #                    "."),
 #                 
-#                 # SELECTINPUT - VYBER SKUPINY TAJCHOV a JARKOV ----------------------------
-#                 
-#                 
-#                 selectInput(inputId ="skupina",
-#                             label = "Skupina tajchov", c("Piargske" = "piargske",
-#                                                          "Štiavnické"="stiavnicke",
-#                                                          "Hodrušské"="hodrusske",
-#                                                          "Vyhnianske"="vyhnianske",
-#                                                          "Belianske"="belianske",
-#                                                          "Kolpaššské"="kolpasske",
-#                                                          "Moderštôlnianske"="modersolnianske",
-#                                                          "Pukanské"="pukanske"),
-#                             selectize = TRUE, selected = "stiavnicke", multiple = TRUE),
+
 #                 # SLIDER ------------------------------------------------------------------
 #                 # Vysvetlujuci text
 #                 # HTML(paste0("Movies released between the following dates will be plotted. 
@@ -298,13 +346,7 @@ ui <- dashboardPage(header = header,
 #                 #             min = 1500, max = max_date, value = c(1500), animate = TRUE, step = 25),
 # 
 
-#                 
-#                 # CHECKBOX ----------------------------------------------------------------
-#                 checkboxGroupInput("checkbox", "Objects to show:",
-#                                    c("Tajchy" = "tjch",
-#                                      "Jarky" = "jrk",
-#                                      "Štôlne" = "stl"),
-#                                    selected = "tjch"),
+#               
 #                 
 
 #   
