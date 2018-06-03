@@ -118,7 +118,7 @@ sidebar <- dashboardSidebar(
                                                     # sliderInput("range", "Rok:",
                                                     #             min_date, max_date, value = max_date, animate = TRUE, step = 30),
               
-              checkboxGroupInput("shpSelect", "Objects to show:",
+              checkboxGroupInput("shpSelect", "Zobraz na mape:",
                                  c("Tajchy" = "shpTajchy",
                                    "Jarky" = "shpJarky",
                                    "Štôlne" = "shpStolne",
