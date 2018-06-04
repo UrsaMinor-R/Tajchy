@@ -1,0 +1,32 @@
+
+@import url("//fonts.googleapis.com/css?family=IM+Fell+Double+Pica+SC");
+@import url("//fonts.googleapis.com/css?family=Swanky+and+Moo+Moo");
+
+body {
+	background-color: #000000;
+	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif
+}
+
+
+
+
+
+nadpis {
+	font-family: "IM Fell Double Pica SC";
+	font-size: 22px;
+	font-style: normal;
+	font-variant: normal;
+	text-align: left;
+	padding-bottom: 5px;
+	padding-left: 20px
+}
+
+pisane {
+	font-family: "Swanky and Moo Moo";
+	font-size: 17px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 200;
+	color:#00BFFF
+}

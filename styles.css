@@ -1,118 +1,53 @@
-/* Used for the example */
-.green {
-  background: green;
-}
+@import url("//fonts.googleapis.com/css?family=Special+Elite");
+@import url("//fonts.googleapis.com/css?family=Mate");
 
-/* Rules to make the page nicer */
+
+h1 {
+	font-family: "Special Elite";
+	font-size: 38px;
+	font-style: italic;
+	font-variant: small-caps;
+	font-weight: 700;
+	line-height: 41.8px;
+	color: #2B7A78;
+}
 
 body {
-  padding: 0 20px;
-  background: #fafafa;
-  color: #333;
-  font-size: 16px;
+  background-color: #fff;
+  font-family: "Special Elite";
+  color: #17252A;
+  font-size: 12px;
 }
 
-#header {
-  text-align: center;
-  color: #fdfdfd;
-  text-shadow: 0 0 1px #000;
-  padding: 20px 5px 40px;
-  border-bottom: 1px solid #ddd;
-  margin: 0 -35px 30px;
-  background: url('header.png');
+h3 {
+	font-family: "Special Elite";
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 500;
+	line-height: 15.4px;
 }
-
-#title {
-  font-size: 5em;
-  text-shadow: 0 0 5px #000;
-  line-height: 1.2;
-  margin-bottom: 15px;
+p {
+	font-family: "Special Elite";
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 20px;
 }
-
-#subtitle {
-  font-size: 2em;
-  margin-bottom: 15px;
-  line-height: 1.1;
+blockquote {
+	font-family: "Special Elite";
+	font-size: 21px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 30px;
 }
-
-#subsubtitle {
-  font-size: 1.3em;
-}
-
-#subsubtitle a {
-  color: #fdfdfd;
-  text-decoration: underline;
-}
-
-@media only screen and (max-width: 979px) {
-  #header {
-    padding: 15px 5px 35px;
-  }
-  #title {
-    font-size: 4em;
-  }
-  #subtitle {
-    font-size: 1.7em;
-  }
-  #subsubtitle {
-    font-size: 1.2em;
-  }
-}
-
-@media only screen and (max-width: 767px) {
-  #title {
-    font-size: 3.5em;
-  }
-  #subtitle {
-    font-size: 1.5em;
-  }
-  #subsubtitle {
-    font-size: 1.1em;
-  }
-}
-
-.section-title {
-  font-weight: bold;
-  margin-top: 0;
-}
-
-.well {
-  background: #FFFFFF;
-}
-
-#expr-container {
-  margin: 20px 0 15px;
-}
-
-#expr-container .selectize-input {
-  font-size: 26px;
-  line-height: 26px;
-}
-
-#expr-container .selectize-dropdown {
-  font-size: 22px;
-  line-height: 28px;
-}
-
-#expr-container .selectize-dropdown-content {
-  max-height: 300px;
-  padding: 0;
-}
-
-#expr-container .selectize-dropdown-content .option {
-  border-bottom: 1px dotted #ccc;
-}
-
-#submitExpr {
-  font-weight: bold;
-  font-size: 18px;
-  padding: 5px 20px;
-}
-
-#helpText {
-  font-size: 18px;
-}
-
-#btn {
-  font-size: 20px;
+pre {
+	font-family: "Special Elite";
+	font-size: 13px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 18.5714px;
 }
