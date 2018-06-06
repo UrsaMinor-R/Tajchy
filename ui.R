@@ -68,11 +68,11 @@ sidebar <- dashboardSidebar(
   
   sidebarMenu(
     
-   
-      tags$head(
-        tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
-      ),
-      
+    
+    tags$head(
+      tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
+    ),
+    
     # tags$style(
     #   ".main-sidebar {float:top; margin-top:0px; padding-left:5px; padding-right:0px}"
     # ),
@@ -81,13 +81,13 @@ sidebar <- dashboardSidebar(
     # POLOZKY SIDEBAR  MENU ------------------------------------------------------------
     menuItem(span("Interaktívna mapa", style="color:#FFA500"), tabName = "mapa", icon = icon("map"), selected=TRUE),
     
-    menuItem(span("Grafy",style="color:#DA70D6;"),  tabName = "grafy",icon = icon("line-chart")),
+    menuItem(span("Grafy",style="color:#DA70D6"),  tabName = "grafy",icon = icon("line-chart")),
     #badgeLabel = "new", badgeColor = "green"),
     
-    menuItem(span("Zdrojový kód",style="color:#00BFFF;"), icon = icon("file-code-o"), 
+    menuItem(span("Zdrojový kód",style="color:#00BFFF"), icon = icon("file-code-o"), 
              href = "https://github.com/UrsaMinor-R/Tajchy"),
     
-    menuItem(span("Autori",style="color:#00FFFF;"), icon = icon("github-alt"), 
+    menuItem(span("Autori",style="color:#00FFFF"), icon = icon("github-alt"), 
              href = "https://github.com/UrsaMinor-R/Tajchy"),
     # hr(),
     
@@ -101,8 +101,8 @@ sidebar <- dashboardSidebar(
                      # 
                      # # VYBER SKUPINY VHS
                      selectInput(inputId ="skupina",
-                                 label = span("Skupina tajchov:",style="color:#C0C0C0;
-                                              font-size: 10px"),  
+                                 label = span("Skupina tajchov:",style="color:#A0A0A0;
+                                              font-size: 11px"),  
                                  c("Celý systém" = "celySystem",
                                    "Piargske" = "piargske",
                                    "Štiavnické"="stiavnicke",
@@ -110,32 +110,27 @@ sidebar <- dashboardSidebar(
                                    "Vyhnianske"="vyhnianske",
                                    "Belianske"="belianske",
                                    "Kolpaššské"="kolpasske",
-                                   "Moderštôlnianske"="modersolnianske",
+                                   "Moderštôlnianske"="moderstolnianske",
                                    "Pukanské"="pukanske"),
                                  selectize = TRUE,  selected = "celySystem", multiple = FALSE),
                      
                      # ROZSAH - input$range
-                     sliderInput("range",
-                                 label = span("Rok:",style="color:#C0C0C0;
-                                              font-size: 10px"),  
+                     sliderInput("range", "Rok:",
                                  min_date, max_date, value = max_date, animate = TRUE, step = 30),
                      
                      checkboxGroupInput("shpSelect", 
-                                        label = span("Zobraz na mape:",style="color:#C0C0C0;
-                                              font-size: 10px"),  
+                                        label = span( "Zobraz na mape:",style="color:#A0A0A0;
+                                              font-size: 11px"),
                                         c("Jarky" = "shpJarky",
                                           "Štôlne" = "shpStolne",
                                           "Vodné štôlne" = "shpStolneVodne",
                                           "Pingy" = "shpPingy"),
                                         selected = ""),
-
-# RADIO -------------------------------------------------------------------
-                     radioButtons("radio", 
-                                  label = span("Typ informácií:",style="color:#C0C0C0;
-                                              font-size: 10px"),
-                                  c("História"="infoHist", "Technické parametre" = "infoTech" , 
-                                    "Súčasnosť"="infoDnes"), selected = "infoHist"))
-                    
+                     
+                     radioButtons("vybranaInfo", label = span( "Vyber typ informácií:",style="color:#A0A0A0;
+                                              font-size: 11px"), c("História"="infoHist", "Technické parametre"="infoTech",
+                                                                   "Súčasnosť"="infoDnes"))
+                     ))
   
   
   # BUILD IN: ---------------------------------------------------------------
@@ -144,7 +139,7 @@ sidebar <- dashboardSidebar(
   #    "by",
   #    img(src = "https://www.rstudio.com/wp-content/uploads/2014/07/RStudio-Logo-Blue-Gray.png", height = "20px"),
   #    ".")
-    
+    )
 # 
 # tags$div(class="header", checked=NA,
 #          tags$p("Ready to take the Shiny tutorial? If so"),
@@ -173,7 +168,7 @@ body <- dashboardBody(
                           width="11%", height = "auto",
                           fixed = TRUE, draggable = FALSE,
                           
-                          selectInput("bmap", "Base map tile provider", choices = c("OpenStreetMap.Mapnik",
+                          selectInput("bmap", "Mapový podklad:", choices = c("OpenStreetMap.Mapnik",
                                                                                     "Esri.WorldStreetMap",
                                                                                     "Esri.WorldImagery",
                                                                                     "Esri.WorldTopoMap",
@@ -181,26 +176,25 @@ body <- dashboardBody(
                                                                                     "Stamen.Terrain",
                                                                                     "Stamen.Toner"), 
                                       selected = "OpenStreetMap.Mapnik"),
-                          actionButton("update", "Update Map!"),
+                          actionButton("update", "Aktualizuj!"),
                           style = "opacity: 0.85; z-index: 10;" ),
             
             
             # ABSOLUTE PANEL - INFO ---------------------------------------------------
-            # uiOutput("vyberInfo"),
+            absolutePanel(
+              top = "auto", left = "auto", right = 28, bottom = 20,
+              width = "16%", height = "auto",draggable = TRUE,
+              wellPanel(uiOutput("obsahInfoPanela")
+                
+                
+                
+                # selectInput("Suburb", "Select one Suburb:",choices = c("Select one Suburb" = "All")),
+                # uiOutput("secondselection")
+              ),
+              style = "opacity: 0.80; z-index: 10;" ## z-index modification
+            )
             
-    #         absolutePanel(id = "infoUpdate",
-    #           top = "auto", left = "auto", right = 28, bottom = 20,
-    #           width = "16%", height = "auto",draggable = TRUE,
-    #           wellPanel(
-    #             # selectInput("info", "Vyber typ informácie:",choices = infoHist),
-    #             
-    #             uiOutput("vyberInfo")
-    #             # uiOutput("secondselection")
-    #           ),
-    #           style = "opacity: 0.80; z-index: 10;" ## z-index modification
-    #         )
-    #         
-    # ),
+    ),
     
     tabItem(tabName = "grafy",
             
@@ -327,9 +321,9 @@ body <- dashboardBody(
     
     
     
-  )))
+  )
   
-
+)
 
 
 

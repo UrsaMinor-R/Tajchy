@@ -33,3 +33,34 @@ shpTajchy$vznik <- zoo::as.Date(zoo::as.yearmon(shpTajchy$vznik, "%Y"), origin =
 
 # m <- mtcars %>% 
 #   tibble::rownames_to_column()
+
+
+infoObsah <- c("Názov tajchu" = "name", # 1
+               "Skupina" = "skupina", # 2
+               "Rok vzniku" = "vznik", # 3
+               "Plocha vodnej hladiny" = "plocha", # 4
+               "Zemepisné súradnice" = "x", # 5
+               "Zastaraný názov" = "ineMeno", # 6
+               "Staviteľ" = "stavitel", # 7
+               "Materiál hrádze" = "matHradze", # 8
+               "Bufet" = "bufet", # 9
+               "Dĺžka koruny hrádze" = "dlzkaKorun", # 10
+               "Výška hrádze" = "vyskaHradz", # 11
+               "Povodie" = "povodie", # 12
+               "Objem v m3" = "objemM3", # 13
+               "Nadmorská výška" = "nvMNM", # 14
+               "Šírka koruny hrádze" = "sirkaKor", # 15
+               "Pamiatka" = "pamiatka", # 16
+               "Dĺžka zberných jarkov"= "dlzkaZbJrk", # 17
+               "Dĺžka vodných štôlní" = "dlzkaStoln", # 18
+               "Rekonštrukcie" = "rekonstr", # 19
+               "Maximálna Hĺbka" = "maxHlbk", # 20
+               "Zaujímavosť" = "info", # 21
+               "Druhové zastúpenie rýb" = "druhZstRyb", # 22
+               "Revír" = "revir", # 23
+               "Priemerná teplota vody" = "prTvpdy") # 24
+infoHist <- infoObsah[c(1,2,3,6,7,16,21,19)]
+infoTech <- infoObsah[c(20,18,17,15,14,13,12,11,10)]
+infoDnes <- infoObsah[c(24,23,22,9)]
+
+zoz <- list("infoHist"=infoHist, "infoTech" = infoTech, "infoDnes" = infoDnes)

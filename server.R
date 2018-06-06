@@ -46,7 +46,7 @@ shinyServer(function(input, output, session) {
         label = shp_selected()$name
       ) %>%
       
-      addMarkers(lng = 18.9, lat = 48.46, popup = "Hi there")%>%
+      # addMarkers(lng = 18.9, lat = 48.46, popup = "Hi there")%>%
       mapOptions(zoomToLimits = "always")
   })
   
@@ -65,30 +65,46 @@ shinyServer(function(input, output, session) {
     shpSelect <- input$shpSelect # the function is triggered when the select option changes
 
     if (length(shpSelect) > 0) {
-
+      # JARKY
       if ('shpJarky' %in% shpSelect) {
         leafletProxy("map")  %>% addPolylines(data = shpJarky,
                                               weight = 1,
                                               col = 'blue')}
-      
+      # VODNE STOLNE
       if ('shpStolneVodne' %in% shpSelect) {
         leafletProxy("map")  %>% addPolylines(data = shpStolneVodne,
-                                              weight = 1,
-                                              col = 'blue')}
+                                              weight = 2,
+                                              col = 'green')}
+      # STOLNE
       if ('shpStolne' %in% shpSelect) {
-        
         leafletProxy("map")  %>%   addCircles(lng = shpStolne@coords[,1], lat = shpStolne@coords[,2],
                                               weight = 1, radius=8,
                                               color="red", stroke = TRUE, fillOpacity = 0.8)}
+      # PINGY
       if ('shpPingy' %in% shpSelect) {
-        leafletProxy("map")  %>%
-          addCircles(lng = shpPingy@coords[,1], lat = shpPingy@coords[,2],
+        leafletProxy("map")  %>% addCircles(lng = shpPingy@coords[,1], lat = shpPingy@coords[,2],
                                             weight = 1, radius=5,
                                             color="#ffa500", stroke = TRUE, fillOpacity = 0.8)}
 
       
     }
   
+  })
+  
+  
+
+# INFOPANEL ---------------------------------------------------------------
+
+  output$obsahInfoPanela <- renderUI({
+    if (is.null(input$vybranaInfo))
+      return()
+    
+    # Depending on input$input_type, we'll generate a different
+    # UI component and send it to the client.
+    switch(input$vybranaInfo,
+           "infoHist" =  selectInput("info", "Vyber typ informácie:", choices = zoz$infoHist),
+           "infoTech" = selectInput("info", "Vyber typ informácie:", choices = zoz$infoTech),
+           "infoDnes" =   selectInput("info", "Vyber typ informácie:", choices = zoz$infoDnes))
   })
   # setView(lng = 18.91, lat = 48.452, zoom = 13 ) %>%
   
