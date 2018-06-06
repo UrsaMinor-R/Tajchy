@@ -40,14 +40,14 @@ header <- dashboardHeader(
 
 
 sidebar <- dashboardSidebar(
-  tags$style(type = "text/css",
-             "label { font-size: 9px; }"
-  ),
+  # tags$style(type = "text/css",
+  #            "label { font-size: 9px; }"
+  # ),
   
-  tags$style(
-    ".selectize-input { font-size: 8px; }", #line-height: 50px;
-    ".selectize-dropdown { font-size: 8px; }" #line-height: 50px;
-  ),
+  # tags$style(
+  #   ".selectize-input { font-size: 8px; }", #line-height: 50px;
+  #   ".selectize-dropdown { font-size: 8px; }" #line-height: 50px;
+  # ),
   
   
   width = "14%",
@@ -81,16 +81,13 @@ sidebar <- dashboardSidebar(
     # POLOZKY SIDEBAR  MENU ------------------------------------------------------------
     menuItem(span("Interaktívna mapa", style="color:#FFA500"), tabName = "mapa", icon = icon("map"), selected=TRUE),
     
-    menuItem(span("Grafy",style="color:#DA70D6;
-                  font-size: 9px"),  tabName = "grafy",icon = icon("line-chart")),
+    menuItem(span("Grafy",style="color:#DA70D6;"),  tabName = "grafy",icon = icon("line-chart")),
     #badgeLabel = "new", badgeColor = "green"),
     
-    menuItem(span("Zdrojový kód",style="color:#00BFFF;
-                  font-size: 9px"), icon = icon("file-code-o"), 
+    menuItem(span("Zdrojový kód",style="color:#00BFFF;"), icon = icon("file-code-o"), 
              href = "https://github.com/UrsaMinor-R/Tajchy"),
     
-    menuItem(span("Autori",style="color:#00FFFF;
-                  font-size: 9px"), icon = icon("github-alt"), 
+    menuItem(span("Autori",style="color:#00FFFF;"), icon = icon("github-alt"), 
              href = "https://github.com/UrsaMinor-R/Tajchy"),
     # hr(),
     
@@ -104,8 +101,8 @@ sidebar <- dashboardSidebar(
                      # 
                      # # VYBER SKUPINY VHS
                      selectInput(inputId ="skupina",
-                                 label = span("Skupina tajchov:",style="color:#FFFFFF;
-                                              font-size: 9px"),  
+                                 label = span("Skupina tajchov:",style="color:#C0C0C0;
+                                              font-size: 10px"),  
                                  c("Celý systém" = "celySystem",
                                    "Piargske" = "piargske",
                                    "Štiavnické"="stiavnicke",
@@ -118,18 +115,27 @@ sidebar <- dashboardSidebar(
                                  selectize = TRUE,  selected = "celySystem", multiple = FALSE),
                      
                      # ROZSAH - input$range
-                     sliderInput("range", "Rok:",
+                     sliderInput("range",
+                                 label = span("Rok:",style="color:#C0C0C0;
+                                              font-size: 10px"),  
                                  min_date, max_date, value = max_date, animate = TRUE, step = 30),
                      
-                     checkboxGroupInput("shpSelect", "Zobraz na mape:",
+                     checkboxGroupInput("shpSelect", 
+                                        label = span("Zobraz na mape:",style="color:#C0C0C0;
+                                              font-size: 10px"),  
                                         c("Jarky" = "shpJarky",
                                           "Štôlne" = "shpStolne",
                                           "Vodné štôlne" = "shpStolneVodne",
                                           "Pingy" = "shpPingy"),
-                                        selected = "")
-                     
-                     # radioButtons("radio", "Typ analýzy:", c("Historická", "Súčasná"))
-                     ))
+                                        selected = ""),
+
+# RADIO -------------------------------------------------------------------
+                     radioButtons("radio", 
+                                  label = span("Typ informácií:",style="color:#C0C0C0;
+                                              font-size: 10px"),
+                                  c("História"="infoHist", "Technické parametre" = "infoTech" , 
+                                    "Súčasnosť"="infoDnes"), selected = "infoHist"))
+                    
   
   
   # BUILD IN: ---------------------------------------------------------------
@@ -138,7 +144,7 @@ sidebar <- dashboardSidebar(
   #    "by",
   #    img(src = "https://www.rstudio.com/wp-content/uploads/2014/07/RStudio-Logo-Blue-Gray.png", height = "20px"),
   #    ".")
-    )
+    
 # 
 # tags$div(class="header", checked=NA,
 #          tags$p("Ready to take the Shiny tutorial? If so"),
@@ -180,17 +186,21 @@ body <- dashboardBody(
             
             
             # ABSOLUTE PANEL - INFO ---------------------------------------------------
-            absolutePanel(
-              top = "auto", left = "auto", right = 28, bottom = 20,
-              width = "16%", height = "auto",draggable = TRUE,
-              wellPanel(
-                selectInput("Suburb", "Select one Suburb:",choices = c("Select one Suburb" = "All")),
-                uiOutput("secondselection")
-              ),
-              style = "opacity: 0.80; z-index: 10;" ## z-index modification
-            )
+            # uiOutput("vyberInfo"),
             
-    ),
+    #         absolutePanel(id = "infoUpdate",
+    #           top = "auto", left = "auto", right = 28, bottom = 20,
+    #           width = "16%", height = "auto",draggable = TRUE,
+    #           wellPanel(
+    #             # selectInput("info", "Vyber typ informácie:",choices = infoHist),
+    #             
+    #             uiOutput("vyberInfo")
+    #             # uiOutput("secondselection")
+    #           ),
+    #           style = "opacity: 0.80; z-index: 10;" ## z-index modification
+    #         )
+    #         
+    # ),
     
     tabItem(tabName = "grafy",
             
@@ -317,9 +327,9 @@ body <- dashboardBody(
     
     
     
-  )
+  )))
   
-)
+
 
 
 

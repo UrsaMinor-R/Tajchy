@@ -34,7 +34,6 @@ shinyServer(function(input, output, session) {
   
   
   # LEAFLET -----------------------------------------------------------------
-  
   output$map <- renderLeaflet({
     
     input$update   # catching the action button event
@@ -52,10 +51,7 @@ shinyServer(function(input, output, session) {
   })
   
   observe({
-
-
     map <- leafletProxy("map") 
-    
     map %>% clearShapes()
     
     map %>%  
@@ -74,6 +70,23 @@ shinyServer(function(input, output, session) {
         leafletProxy("map")  %>% addPolylines(data = shpJarky,
                                               weight = 1,
                                               col = 'blue')}
+      
+      if ('shpStolneVodne' %in% shpSelect) {
+        leafletProxy("map")  %>% addPolylines(data = shpStolneVodne,
+                                              weight = 1,
+                                              col = 'blue')}
+      if ('shpStolne' %in% shpSelect) {
+        
+        leafletProxy("map")  %>%   addCircles(lng = shpStolne@coords[,1], lat = shpStolne@coords[,2],
+                                              weight = 1, radius=8,
+                                              color="red", stroke = TRUE, fillOpacity = 0.8)}
+      if ('shpPingy' %in% shpSelect) {
+        leafletProxy("map")  %>%
+          addCircles(lng = shpPingy@coords[,1], lat = shpPingy@coords[,2],
+                                            weight = 1, radius=5,
+                                            color="#ffa500", stroke = TRUE, fillOpacity = 0.8)}
+
+      
     }
   
   })
