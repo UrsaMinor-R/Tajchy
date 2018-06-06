@@ -7,10 +7,10 @@ shinyServer(function(input, output, session) {
   # zoznam farieb pre jendotlive skupiny tajchov
   # dirColors <-c("1"="#595490", "2"="#527525", "3"="#A93F35", "4"="#BA48AA")
   
-
-
-# INTERAKTIVNA MAPA TAJCHOV -----------------------------------------------
-
+  
+  
+  # INTERAKTIVNA MAPA TAJCHOV -----------------------------------------------
+  
   # VYBER SKUPINY -----------------------------------------reactive
   group_selected <- reactive({
     req(input$skupina)
@@ -33,94 +33,52 @@ shinyServer(function(input, output, session) {
   })
   
   
-# LEAFLET -----------------------------------------------------------------
-  # output$map <- renderLeaflet({ leaflet() %>% 
-  #     addTiles() %>% 
-  #     setView(6.45471, 50.71, zoom = 14)})
-  # 
+  # LEAFLET -----------------------------------------------------------------
   
   output$map <- renderLeaflet({
-
+    
     input$update   # catching the action button event
     isolate(leaflet() %>%
               addProviderTiles(input$bmap)) %>%
-      setView(lng = 18.91, lat = 48.452, zoom = 13)})
-  
+      addPolygons(
+        data = shp_selected(),
+        weight = 1,
+        col = 'blue',
+        label = shp_selected()$name
+      ) %>%
+      
+      addMarkers(lng = 18.9, lat = 48.46, popup = "Hi there")%>%
+      mapOptions(zoomToLimits = "always")
+  })
   
   observe({
+
+
+    map <- leafletProxy("map") 
     
-    # Create map
-    map <- leafletProxy("map")
     map %>% clearShapes()
     
-    # Get select inputs
+    map %>%  
+      addPolygons(
+        data = shp_selected(),
+        weight = 1,
+        col = 'blue',
+        label = shp_selected()$name
+      )
+
     shpSelect <- input$shpSelect # the function is triggered when the select option changes
-    
+
     if (length(shpSelect) > 0) {
-      if ('shpTajchy' %in% shpSelect) {
-        # density <- input$density # triggers this function when you update density
-        
-        # "sample" the linestring according to selected density
-        # linetrack <- track_data %>%
-        #   sf::st_line_sample(density = 1/density, type = "regular") %>%
-        #   sf::st_transform(4326) %>% 
-        #   st_cast("LINESTRING")
-        
-        leafletProxy("map")  %>% addPolylines(data = shpTajchy,
-                                              weight = 1,
-                                                    col = 'blue',
-                                                    label = shpTajchy$name)
-      }
 
       if ('shpJarky' %in% shpSelect) {
-
         leafletProxy("map")  %>% addPolylines(data = shpJarky,
                                               weight = 1,
                                               col = 'blue')}
-      
-      if ('shpStolneVodne' %in% shpSelect) {
-        
-        leafletProxy("map")  %>% addPolylines(data = shpStolneVodne,
-                                              weight = 2,
-                                              col = 'green')}
-      
-      if ('shpStolne' %in% shpSelect) {
-        
-        leafletProxy("map")  %>%   addCircles(lng = shpStolne@coords[,1], lat = shpStolne@coords[,2],
-                                              weight = 1, radius=8,
-                                              color="red", stroke = TRUE, fillOpacity = 0.8)}
-      
-      if ('shpPingy' %in% shpSelect) {
-        
-        leafletProxy("map")  %>% addCircles(lng = shpPingy@coords[,1], lat = shpPingy@coords[,2],
-                                                              weight = 1, radius=5,
-                                                              color="#ffa500", stroke = TRUE, fillOpacity = 0.8)}
-      
-      
     }
-    
-    
-    
-  })
-      
-
-
-  #     
-  #     addLegend("bottomright", colors= "#ffa500", labels="Dunkin'", title="In Connecticut") %>%
-  # 
-      # addMarkers(lng = shpPingy@coords[,1], lat = shpPingy@coords[,2] )%>%
-
-  #     mapOptions(zoomToLimits = "always") %>%
-  #   
-  #   addCircles(lng = shpStolne@coords[,1], lat = shpStolne@coords[,2],
-  #              weight = 1, radius=8, 
-  #              color="red", stroke = TRUE, fillOpacity = 0.8) %>%
-  #     
-  #     mapOptions(zoomToLimits = "always")
-  # })
   
+  })
   # setView(lng = 18.91, lat = 48.452, zoom = 13 ) %>%
-
+  
   
   # https://github.com/rstudio/shiny-examples/blob/master/086-bus-dashboard/server.R
   
@@ -133,14 +91,14 @@ shinyServer(function(input, output, session) {
   
   # plot(shpTajchy[shpTajchy$skupina=='belianske', ])
   
-
   
-# GRAFY a TABULKA-------------------------------------------------------------------
-
-# 2D GRAF - plotly 3D scatterplot --------------------------------------------------
+  
+  # GRAFY a TABULKA-------------------------------------------------------------------
+  
+  # 2D GRAF - plotly 3D scatterplot --------------------------------------------------
   
   dataset2d <- reactive({
-  dt <- dtTajchy %>%
+    dt <- dtTajchy %>%
       select(input$x2d, input$y2d, input$farba2d)
   })
   
@@ -181,11 +139,11 @@ shinyServer(function(input, output, session) {
     if (is.null(d)) "Relayout (i.e., zoom) events appear here" else d
   })
   
-
-
-
   
-# 3D GRAF - plotly 3D scatterplot -----------------------------------------
+  
+  
+  
+  # 3D GRAF - plotly 3D scatterplot -----------------------------------------
   
   dataset3d <- reactive({
     dt <- dtTajchy %>%
@@ -197,11 +155,11 @@ shinyServer(function(input, output, session) {
   output$plot3d <- renderPlotly({
     
     plot_ly(dataset3d(), x = ~dataset3d()[[1]], y = ~dataset3d()[[2]], z = ~dataset3d()[[3]], type = "scatter3d",
-    mode = "markers",
-    # symbol = ~skupina,
-    color = ~dataset3d()[[4]])
+            mode = "markers",
+            # symbol = ~skupina,
+            color = ~dataset3d()[[4]])
     # text = ~paste(name)) 
-  
+    
   })
   
   output$hover3d <- renderPrint({
@@ -217,7 +175,7 @@ shinyServer(function(input, output, session) {
   
   
   
-# DATATABLE ---------------------------------------------------------------
+  # DATATABLE ---------------------------------------------------------------
   # datasetDT <- reactive({
   #   dt <- dtTajchy %>%
   #     select(input$xDT, input$yDT, input$zDT, input$farbaDT, name)
@@ -270,9 +228,9 @@ shinyServer(function(input, output, session) {
   #     write.csv(m[d$selection(),], file)
   #   }
   # })
-
-# INFO TABULKA ------------------------------------------------------------
-
+  
+  # INFO TABULKA ------------------------------------------------------------
+  
   # output$infoTable <- DT::renderDataTable({
   #   req(input$skupina)
   #   data_from_selected_tajch <- dtTajchy %>%
@@ -285,8 +243,8 @@ shinyServer(function(input, output, session) {
   # })
   
   
-#   
-
+  #   
+  
 })
 
 

@@ -33,7 +33,7 @@ header <- dashboardHeader(
   title = HTML(
     "<div style = 'background-color:#FFFFFF; vertical-align:middle'>
     <img src = 'logo_tajchy.png' align = 'left' height = '40px'>
-    <nadpis>TAJCHÁR  - tvoj sprievodca po Banskostiavnických Tajchoch<nadpis/> <pisane>...nafullovaný informáciami...<pisane/>
+    <nadpis>TAJCHÁR  - tvoj sprievodca po Banskostiavnických Tajchoch<nadpis/> <pisane>-- nafullovaný informáciami --<pisane/>
     </div>"),
   titleWidth = "97%"
   )
@@ -122,12 +122,11 @@ sidebar <- dashboardSidebar(
                                  min_date, max_date, value = max_date, animate = TRUE, step = 30),
                      
                      checkboxGroupInput("shpSelect", "Zobraz na mape:",
-                                        c("Tajchy" = "shpTajchy",
-                                          "Jarky" = "shpJarky",
+                                        c("Jarky" = "shpJarky",
                                           "Štôlne" = "shpStolne",
                                           "Vodné štôlne" = "shpStolneVodne",
                                           "Pingy" = "shpPingy"),
-                                        selected = "shpTajchy")
+                                        selected = "")
                      
                      # radioButtons("radio", "Typ analýzy:", c("Historická", "Súčasná"))
                      ))
