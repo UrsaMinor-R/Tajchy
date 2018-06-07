@@ -59,8 +59,7 @@ infoObsah <- c("Názov tajchu" = "name", # 1
                "Druhové zastúpenie rýb" = "druhZstRyb", # 22
                "Revír" = "revir", # 23
                "Priemerná teplota vody" = "prTvpdy") # 24
-infoHist <- infoObsah[c(1,2,3,6,7,16,21,19)]
-infoTech <- infoObsah[c(20,18,17,15,14,13,12,11,10)]
-infoDnes <- infoObsah[c(24,23,22,9)]
 
-zoz <- list("infoHist"=infoHist, "infoTech" = infoTech, "infoDnes" = infoDnes)
+infoList<- list("infoHist" = infoObsah[c(1,2,3,6,7,16,21,19)],
+                "infoTech" = infoObsah[c(1,2,20,18,17,15,14,13,12,11,10)],
+                "infoDnes" = infoObsah[c(1,2,24,23,22,9)])

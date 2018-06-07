@@ -1,6 +1,8 @@
 # https://plot.ly/r/shinyapp-3d-events/
 
 
+
+
 # 1_DashboardHeader -------------------------------------------------------
 header <- dashboardHeader(
   # Hlavny panel
@@ -162,12 +164,15 @@ body <- dashboardBody(
                                                                                     "Stamen.Toner"), 
                                       selected = "OpenStreetMap.Mapnik"),
                           actionButton("update", "Aktualizuj!"),
-                          style = "opacity: 0.85; z-index: 10;" ),
+                          style = "opacity: 0.85; z-index: 10;",
+                          
+                          tags$head(tags$script(src = "message-handler.js")),
+                          actionButton("do", "Popis")),
             
             
             # INFO - Abs.panel ---------------------------------------------------
             absolutePanel(
-              top = "auto", left = "auto", right = 28, bottom = 20,
+              top = "auto", left = "auto", right = 28, bottom = 200,
               width = "16%", height = "auto",draggable = TRUE,
               wellPanel(uiOutput("obsahInfoPanela")
               ),

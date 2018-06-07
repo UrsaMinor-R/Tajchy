@@ -38,50 +38,687 @@ shinyServer(function(input, output, session) {
       return()
     
     switch(input$vybranaInfo,
-           "infoHist" =  selectInput("infoVolba", "Vyber typ informácie:", choices = zoz$infoHist),
-           "infoTech" = selectInput("infoVolba", "Vyber typ informácie:", choices = zoz$infoTech),
-           "infoDnes" =   selectInput("infoVolba", "Vyber typ informácie:", choices = zoz$infoDnes))
+           "infoHist" =  selectInput("typInfo", "Vyber typ informácie:", choices = infoList$infoHist),
+           "infoTech" = selectInput("typInfo", "Vyber typ informácie:", choices = infoList$infoTech),
+           "infoDnes" =   selectInput("typInfo", "Vyber typ informácie:", choices = infoList$infoDnes))
   })
   
-# toto <-   reactive({input$infoVolba})
-# output$text <- renderText({paste0(toto())})
+
+
 
 # reactLabel <- reactive({
-#   shp_selected()$infoVolba
+#   shp_selected()$typInfo
 # })
 
 
   # LEAFLET -----------------------------------------------------------------
   output$map <- renderLeaflet({
     
+    # pal <- colorNumeric(c("red", "green", "blue"), n = length(unique(shpTajchy$skupina)))
+      # colorQuantile("Blues", NULL, n = length(unique(shpTajchy$skupina)))
+   
+    
     input$update   # catching the action button event
     isolate(leaflet() %>%
               addProviderTiles(input$bmap)) %>%
       addPolygons(
         data = shp_selected(),
-        weight = 1,
-        col = 'blue'
+        weight = 1
+        # col = ~pal
         # label = shp_selected()$label1
       ) %>%
       mapOptions(zoomToLimits = "always")
   })
   
+# 
+# typInfo = reactiveVal({
+#   input$typInfo
+# })
+
+# output$text <- renderText({paste0(typInfo())})
+
   observe({
+
     map <- leafletProxy("map") 
     map %>% clearShapes()
-    # 
-    # 
+    
+
+    factpal <- colorFactor(rainbow(n = length(unique(shpTajchy$name))), shpTajchy$name)
+    pal.nvMNM <- colorNumeric(palette = "YlGnBu",domain = shpTajchy$nvMNM)
+    # qpal <- colorQuantile("Blues",shpTajchy$skupina, n = length(unique(shpTajchy$skupina)))
+
     map %>%
       addPolygons(
         data = shp_selected(),
-        weight = 1,
-        col = 'blue',
-        label = shp_selected()$input$label1
-      )
+        label = shp_selected()$name,
+        stroke = FALSE,
+        smoothFactor = 0.2,
+        fillOpacity = 1,
+        color = ~factpal(name),
+        weight = 1 
+      ) 
+      # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
 
+
+# TYPINFO -----------------------------------------------------------------
+    typInfo = input$typInfo
+    
+
+    
+    anoNie <- FALSE
+    
+    if (length(typInfo) > 0) {
+      
+      if ('name' %in% typInfo) {
+        leafletProxy("map")  %>%   addPolygons(
+          data = shp_selected(),
+          # label = shp_selected()$name,
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          color = ~factpal(name),
+          weight = 1,
+          label = shp_selected()$name,
+          labelOptions = labelOptions(noHide = anoNie, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      ))
+        ) 
+      }
+      
+
+# 0_Skupina ---------------------------------------------------------------
+      if ('skupina' %in% typInfo) {
+        leafletProxy("map")  %>%   addPolygons(
+          data = shp_selected(),
+          # label = shp_selected()$skupina,
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          color = ~factpal(skupina),
+          weight = 1,
+          label = shp_selected()$skupina,
+          labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      ))
+        ) 
+      }
+
+# H_Vznik -----------------------------------------------------------------
+      if ('vznik' %in% typInfo) {
+
+        # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+
+        leafletProxy("map")  %>%  addPolygons(
+          data = shp_selected(),
+          label = shp_selected()$vznik,
+          labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      )),
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          # color = ~pal(vznik),
+          weight = 1
+        ) 
+        # %>%
+          # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+          # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+      }
+
+
+# H_Zastarany nazov -------------------------------------------------------
+      if ('ineMeno' %in% typInfo) {
+        # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+        
+        leafletProxy("map")  %>%  addPolygons(
+          data = shp_selected(),
+          label = shp_selected()$ineMeno,
+          labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                      style = list(
+                                        "color" = "#00BFFF",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      )),
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          # color = ~pal(vznik),
+          weight = 1
+        ) 
+        # %>%
+        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+      }
+      
+      
+      # H_ZStavitel -------------------------------------------------------
+      if ('stavitel' %in% typInfo) {
+        # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+        
+        leafletProxy("map")  %>%  addPolygons(
+          data = shp_selected(),
+          label = shp_selected()$stavitel,
+          labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      )),
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          # color = ~pal(vznik),
+          weight = 1
+        )
+        # %>%
+        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+      }
+      
+      # H_Pamiatka -------------------------------------------------------
+      if ('pamiatka' %in% typInfo) {
+        # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+        
+        leafletProxy("map")  %>%  addPolygons(
+          data = shp_selected(),
+          label = shp_selected()$pamiatka,
+          labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      )),
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          # color = ~pal(vznik),
+          weight = 1
+        )
+        # %>%
+        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+      }
+      
+      
+      # H_Zaujimavost -------------------------------------------------------
+      if ('info' %in% typInfo) {
+        # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+        
+        leafletProxy("map")  %>%  addPolygons(
+          data = shp_selected(),
+          label = shp_selected()$info,
+          labelOptions = labelOptions(noHide = F, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      )),
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          # color = ~pal(vznik),
+          weight = 1
+        )}
+        
+        
+
+        # H_Rekonstrukcie ---------------------------------------------------------
+        if ('rekonstr' %in% typInfo) {
+          # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+          
+          leafletProxy("map")  %>%  addPolygons(
+            data = shp_selected(),
+            label = shp_selected()$rekonstr,
+            labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                        style = list(
+                                          "color" = "blue",
+                                          "font-family" = "serif",
+                                          "font-style" = "bold",
+                                          "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                          "font-size" = "10px",
+                                          "border-color" = "rgba(0,0,0,0.5)"
+                                        )),
+            stroke = FALSE,
+            smoothFactor = 0.2,
+            fillOpacity = 1,
+            # color = ~pal(vznik),
+            weight = 1
+          )
+        # %>%
+        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+      }
+      
+      
+      # T_Max hlbka ---------------------------------------------------------
+      if ('maxHlbk' %in% typInfo) {
+        # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+        
+        leafletProxy("map")  %>%  addPolygons(
+          data = shp_selected(),
+          label = as.character(shp_selected()$maxHlbk),
+          labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      )),
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          # color = ~pal(vznik),
+          weight = 1
+        )
+        # %>%
+        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+      }
+      
+      # T_Max hlbka ---------------------------------------------------------
+      if ('dlzkaStoln' %in% typInfo) {
+        # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+        
+        leafletProxy("map")  %>%  addPolygons(
+          data = shp_selected(),
+          label = as.character(shp_selected()$dlzkaStoln),
+          labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      )),
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          # color = ~pal(vznik),
+          weight = 1
+        )
+        # %>%
+        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+      }
+      
+      # T_Dlzka zbernych jarkov ---------------------------------------------------------
+      if ('dlzkaZbJrk' %in% typInfo) {
+        # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+        
+        leafletProxy("map")  %>%  addPolygons(
+          data = shp_selected(),
+          label = as.character(shp_selected()$dlzkaZbJrk),
+          labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      )),
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          # color = ~pal(vznik),
+          weight = 1
+        )
+        # %>%
+        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+      }
+      
+      
+      # T_Sirka koruny hradze ---------------------------------------------------------
+      if ('sirkaKor' %in% typInfo) {
+        # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+        
+        leafletProxy("map")  %>%  addPolygons(
+          data = shp_selected(),
+          label = as.character(shp_selected()$sirkaKor),
+          labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      )),
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          # color = ~pal(vznik),
+          weight = 1
+        )
+        # %>%
+        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+      }
+      
+      
+      # T_Dlzka koruny hradze ---------------------------------------------------------
+      if ('dlzkaKorun' %in% typInfo) {
+        # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+        
+        leafletProxy("map")  %>%  addPolygons(
+          data = shp_selected(),
+          label = as.character(shp_selected()$dlzkaKorun),
+          labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      )),
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          # color = ~pal(vznik),
+          weight = 1
+        )
+        # %>%
+        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+      }
+      
+      
+      
+      # T_Max hlbka ---------------------------------------------------------
+      if ('maxHlbk' %in% typInfo) {
+        # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+
+        leafletProxy("map")  %>%  addPolygons(
+          data = shp_selected(),
+          label = as.character(shp_selected()$maxHlbk),
+          labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      )),
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          # color = ~pal(vznik),
+          weight = 1
+        )
+        # %>%
+        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+      }
+      
+      # T_Vyska Hradze ---------------------------------------------------------
+      if ('vyskaHradz' %in% typInfo) {
+        # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+        
+        leafletProxy("map")  %>%  addPolygons(
+          data = shp_selected(),
+          label = as.character(shp_selected()$vyskaHradz),
+          labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      )),
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          # color = ~pal(vznik),
+          weight = 1
+        )
+        # %>%
+        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+      }
+      
+      
+      # T_Povodie ---------------------------------------------------------
+      if ('povodie' %in% typInfo) {
+        # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+        
+        leafletProxy("map")  %>%  addPolygons(
+          data = shp_selected(),
+          label = shp_selected()$povodie,
+          labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      )),
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          # color = ~pal(vznik),
+          weight = 1
+        )
+        # %>%
+        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+      }
+      
+      # T_Objem ---------------------------------------------------------
+      if ('objemM3' %in% typInfo) {
+        # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+        
+        leafletProxy("map")  %>%  addPolygons(
+          data = shp_selected(),
+          label = as.character(shp_selected()$objemM3),
+          labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      )),
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          # color = ~pal(vznik),
+          weight = 1
+        )
+        # %>%
+        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+      }
+      
+      # T_Nadmorska vyska ---------------------------------------------------------
+      if ('nvMNM' %in% typInfo) {
+        # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+        
+        leafletProxy("map")  %>%  addPolygons(
+          data = shp_selected(),
+          label = as.character(shp_selected()$nvMNM),
+          labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      )),
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          color = ~pal.nvMNM(nvMNM),
+          weight = 1
+        ) %>%
+          addLegend("bottomleft", pal = pal.nvMNM, values = dtTajchy$nvMNM,
+                    title = "Nadmorská výška",
+                    # labFormat = labelFormat(prefix = "$"),
+                    opacity = 1)
+          
+        
+
+        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+      }
+      
+      
+      # S_Priemerna teplota vody ---------------------------------------------------------
+      if ('prTvpdy' %in% typInfo) {
+        # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+        
+        leafletProxy("map")  %>%  addPolygons(
+          data = shp_selected(),
+          label = as.character(shp_selected()$prTvpdy),
+          labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      )),
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          # color = ~pal(vznik),
+          weight = 1
+        )
+        # %>%
+        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+      }
+      
+      # S_Revír ---------------------------------------------------------
+      if ('revir' %in% typInfo) {
+        # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+        
+        leafletProxy("map")  %>%  addPolygons(
+          data = shp_selected(),
+          label = as.character(shp_selected()$revir),
+          labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      )),
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          # color = ~pal(vznik),
+          weight = 1
+        )
+        # %>%
+        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+      }
+      
+      # S_Druhove zastupenie ryby ---------------------------------------------------------
+      if ('druhZstRyb' %in% typInfo) {
+        # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+        
+        leafletProxy("map")  %>%  addPolygons(
+          data = shp_selected(),
+          label = as.character(shp_selected()$druhZstRyb),
+          labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      )),
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          # color = ~pal(vznik),
+          weight = 1
+        )
+        # %>%
+        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+      }
+      
+      
+      # S_Bufet ---------------------------------------------------------
+      if ('bufet' %in% typInfo) {
+        # qpal <- colorQuantile("Blues",shpTajchy$vznik, n = length(unique(shpTajchy$vznik)))
+        
+        leafletProxy("map")  %>%  addPolygons(
+          data = shp_selected(),
+          label = as.character(shp_selected()$bufet),
+          labelOptions = labelOptions(noHide = T, direction = "bottom",
+                                      style = list(
+                                        "color" = "blue",
+                                        "font-family" = "serif",
+                                        "font-style" = "bold",
+                                        "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                        "font-size" = "10px",
+                                        "border-color" = "rgba(0,0,0,0.5)"
+                                      )),
+          stroke = FALSE,
+          smoothFactor = 0.2,
+          fillOpacity = 1,
+          # color = ~pal(vznik),
+          weight = 1
+        )
+        # %>%
+        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+      }
+      
+      
+      } # end: typinfo
+    
+    
+    
     shpSelect <- input$shpSelect # the function is triggered when the select option changes
-
-
+    
+    
     if (length(shpSelect) > 0) {
       # JARKY
       if ('shpJarky' %in% shpSelect) {
@@ -115,11 +752,11 @@ shinyServer(function(input, output, session) {
 
       
     }
+    
+
   
   })
 
-
-  
   
   # setView(lng = 18.91, lat = 48.452, zoom = 13 ) %>%
   
