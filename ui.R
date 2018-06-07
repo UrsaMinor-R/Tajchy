@@ -176,8 +176,8 @@ body <- dashboardBody(
               width = "16%", height = "auto",draggable = TRUE,
               wellPanel(uiOutput("obsahInfoPanela")
               ),
-              textOutput("text"),
-              style = "opacity: 0.80; z-index: 10;" ## z-index modification
+              style = "opacity: 0.80; z-index: 10;", ## z-index modification
+              textOutput("text")
             )
     ),
     

@@ -1,6 +1,40 @@
 
 
 shinyServer(function(input, output, session) {
+  
+  
+  counter <- reactiveValues(countervalue = 1) # Defining & initializing the reactiveValues object
+  
+  observeEvent(input$do, {
+    counter$countervalue <- counter$countervalue + 1     # if the add button is clicked, increment the value by 1 and update it
+  })
+  
+  logika <- reactive({
+    if(counter$countervalue%%2==TRUE){
+      FALSE
+    } else {
+      TRUE
+    }
+  })
+  # output$count <- renderText({
+  #   paste("Counter Value is ", counter$countervalue)   # print the latest value stored in the reactiveValues object
+  # })
+#   
+#       num=TRUE
+#       
+#   observeEvent(id input$do, {
+# 
+#     num=FALSE
+# 
+# 
+#   })
+#   
+  output$text <- renderText({paste0(logika())})
+#   anoNie <- TRUE
+#   
+#   
+  
+  
   # VYHLADAVANIE
   # input$searchText and  input$searchButton.
   
@@ -75,7 +109,6 @@ shinyServer(function(input, output, session) {
 #   input$typInfo
 # })
 
-# output$text <- renderText({paste0(typInfo())})
 
   observe({
 
@@ -83,7 +116,7 @@ shinyServer(function(input, output, session) {
     map %>% clearShapes()
     
 
-    factpal <- colorFactor(rainbow(n = length(unique(shpTajchy$name))), shpTajchy$name)
+    pal.name <- colorFactor(rainbow(n = length(unique(shpTajchy$name))), shpTajchy$name)
     pal.nvMNM <- colorNumeric(palette = "YlGnBu",domain = shpTajchy$nvMNM)
     # qpal <- colorQuantile("Blues",shpTajchy$skupina, n = length(unique(shpTajchy$skupina)))
 
@@ -94,10 +127,10 @@ shinyServer(function(input, output, session) {
         stroke = FALSE,
         smoothFactor = 0.2,
         fillOpacity = 1,
-        color = ~factpal(name),
+        color = ~pal.name(name),
         weight = 1 
       ) 
-      # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
+      # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
 
 
 # TYPINFO -----------------------------------------------------------------
@@ -105,21 +138,23 @@ shinyServer(function(input, output, session) {
     
 
     
-    anoNie <- FALSE
+
     
     if (length(typInfo) > 0) {
-      
       if ('name' %in% typInfo) {
+        
+      map %>% clearShapes()
+        
         leafletProxy("map")  %>%   addPolygons(
           data = shp_selected(),
           # label = shp_selected()$name,
           stroke = FALSE,
           smoothFactor = 0.2,
           fillOpacity = 1,
-          color = ~factpal(name),
+          color = ~pal.name(name),
           weight = 1,
           label = shp_selected()$name,
-          labelOptions = labelOptions(noHide = anoNie, direction = "bottom",
+          labelOptions = labelOptions(noHide = logika(), direction = "left",offset=c(8,-17),
                                       style = list(
                                         "color" = "blue",
                                         "font-family" = "serif",
@@ -127,6 +162,7 @@ shinyServer(function(input, output, session) {
                                         "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
                                         "font-size" = "10px",
                                         "border-color" = "rgba(0,0,0,0.5)"
+                                        
                                       ))
         ) 
       }
@@ -140,10 +176,10 @@ shinyServer(function(input, output, session) {
           stroke = FALSE,
           smoothFactor = 0.2,
           fillOpacity = 1,
-          color = ~factpal(skupina),
+          color = ~pal.name(skupina),
           weight = 1,
           label = shp_selected()$skupina,
-          labelOptions = labelOptions(noHide = T, direction = "bottom",
+          labelOptions = labelOptions(noHide = logika(), direction = "bottom",
                                       style = list(
                                         "color" = "blue",
                                         "font-family" = "serif",
@@ -179,8 +215,8 @@ shinyServer(function(input, output, session) {
           weight = 1
         ) 
         # %>%
-          # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
-          # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+          # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
+          # addLegend('topright',pal=pal.name, values=shpTajchy$vznik,title="Company",opacity=1)
       }
 
 
@@ -207,8 +243,8 @@ shinyServer(function(input, output, session) {
           weight = 1
         ) 
         # %>%
-        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
-        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+        # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=pal.name, values=shpTajchy$vznik,title="Company",opacity=1)
       }
       
       
@@ -235,8 +271,8 @@ shinyServer(function(input, output, session) {
           weight = 1
         )
         # %>%
-        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
-        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+        # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=pal.name, values=shpTajchy$vznik,title="Company",opacity=1)
       }
       
       # H_Pamiatka -------------------------------------------------------
@@ -262,8 +298,8 @@ shinyServer(function(input, output, session) {
           weight = 1
         )
         # %>%
-        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
-        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+        # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=pal.name, values=shpTajchy$vznik,title="Company",opacity=1)
       }
       
       
@@ -315,8 +351,8 @@ shinyServer(function(input, output, session) {
             weight = 1
           )
         # %>%
-        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
-        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+        # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=pal.name, values=shpTajchy$vznik,title="Company",opacity=1)
       }
       
       
@@ -343,8 +379,8 @@ shinyServer(function(input, output, session) {
           weight = 1
         )
         # %>%
-        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
-        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+        # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=pal.name, values=shpTajchy$vznik,title="Company",opacity=1)
       }
       
       # T_Max hlbka ---------------------------------------------------------
@@ -370,8 +406,8 @@ shinyServer(function(input, output, session) {
           weight = 1
         )
         # %>%
-        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
-        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+        # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=pal.name, values=shpTajchy$vznik,title="Company",opacity=1)
       }
       
       # T_Dlzka zbernych jarkov ---------------------------------------------------------
@@ -397,8 +433,8 @@ shinyServer(function(input, output, session) {
           weight = 1
         )
         # %>%
-        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
-        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+        # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=pal.name, values=shpTajchy$vznik,title="Company",opacity=1)
       }
       
       
@@ -425,8 +461,8 @@ shinyServer(function(input, output, session) {
           weight = 1
         )
         # %>%
-        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
-        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+        # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=pal.name, values=shpTajchy$vznik,title="Company",opacity=1)
       }
       
       
@@ -453,8 +489,8 @@ shinyServer(function(input, output, session) {
           weight = 1
         )
         # %>%
-        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
-        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+        # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=pal.name, values=shpTajchy$vznik,title="Company",opacity=1)
       }
       
       
@@ -482,8 +518,8 @@ shinyServer(function(input, output, session) {
           weight = 1
         )
         # %>%
-        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
-        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+        # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=pal.name, values=shpTajchy$vznik,title="Company",opacity=1)
       }
       
       # T_Vyska Hradze ---------------------------------------------------------
@@ -509,8 +545,8 @@ shinyServer(function(input, output, session) {
           weight = 1
         )
         # %>%
-        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
-        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+        # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=pal.name, values=shpTajchy$vznik,title="Company",opacity=1)
       }
       
       
@@ -537,8 +573,8 @@ shinyServer(function(input, output, session) {
           weight = 1
         )
         # %>%
-        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
-        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+        # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=pal.name, values=shpTajchy$vznik,title="Company",opacity=1)
       }
       
       # T_Objem ---------------------------------------------------------
@@ -564,8 +600,8 @@ shinyServer(function(input, output, session) {
           weight = 1
         )
         # %>%
-        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
-        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+        # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=pal.name, values=shpTajchy$vznik,title="Company",opacity=1)
       }
       
       # T_Nadmorska vyska ---------------------------------------------------------
@@ -597,8 +633,8 @@ shinyServer(function(input, output, session) {
           
         
 
-        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
-        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+        # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=pal.name, values=shpTajchy$vznik,title="Company",opacity=1)
       }
       
       
@@ -625,8 +661,8 @@ shinyServer(function(input, output, session) {
           weight = 1
         )
         # %>%
-        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
-        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+        # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=pal.name, values=shpTajchy$vznik,title="Company",opacity=1)
       }
       
       # S_Revír ---------------------------------------------------------
@@ -652,8 +688,8 @@ shinyServer(function(input, output, session) {
           weight = 1
         )
         # %>%
-        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
-        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+        # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=pal.name, values=shpTajchy$vznik,title="Company",opacity=1)
       }
       
       # S_Druhove zastupenie ryby ---------------------------------------------------------
@@ -679,8 +715,8 @@ shinyServer(function(input, output, session) {
           weight = 1
         )
         # %>%
-        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
-        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+        # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=pal.name, values=shpTajchy$vznik,title="Company",opacity=1)
       }
       
       
@@ -707,8 +743,8 @@ shinyServer(function(input, output, session) {
           weight = 1
         )
         # %>%
-        # addLegend("bottomright", colors= ~factpal(name), labels=~unique(name), title="In Connecticut")
-        # addLegend('topright',pal=factpal, values=shpTajchy$vznik,title="Company",opacity=1)
+        # addLegend("bottomright", colors= ~pal.name(name), labels=~unique(name), title="In Connecticut")
+        # addLegend('topright',pal=pal.name, values=shpTajchy$vznik,title="Company",opacity=1)
       }
       
       
