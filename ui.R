@@ -1,11 +1,9 @@
 # https://plot.ly/r/shinyapp-3d-events/
 
 
+# 1_DashboardHeader -------------------------------------------------------
 header <- dashboardHeader(
-  
-  
-  # includeCSS('styles.css'),
-  
+  # Hlavny panel
   tags$li(
     class = "dropdown",
     tags$style(
@@ -14,7 +12,7 @@ header <- dashboardHeader(
       font-size:10px; 
       font-weight:bold; 
       line-height:10px;}"),
-    
+    # LOGO
     tags$style(
       ".main-header .logo {height: 45px;
       padding: 0px 0px;
@@ -23,11 +21,11 @@ header <- dashboardHeader(
       line-height: 45px !important;
       padding: 0 0px;}"),
     tags$style(
+      # https://gitlab.com/ant-guillot/SemiCollapsibleSidebar
       ".sidebar-toggle {
       float: right !important;
       }")
   ),
-  
   
   
   title = HTML(
@@ -39,16 +37,20 @@ header <- dashboardHeader(
   )
 
 
+# 2_Sidebar ---------------------------------------------------------------
 sidebar <- dashboardSidebar(
+  # Prepojenie na CSS
+  tags$head(
+    tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
+  ),
+  
   # tags$style(type = "text/css",
   #            "label { font-size: 9px; }"
   # ),
-  
   # tags$style(
   #   ".selectize-input { font-size: 8px; }", #line-height: 50px;
   #   ".selectize-dropdown { font-size: 8px; }" #line-height: 50px;
   # ),
-  
   
   width = "14%",
   
@@ -61,24 +63,14 @@ sidebar <- dashboardSidebar(
   #                           font-size: 13px;
   #                           }
   #                           '))),
-  # h1("New Application", 
-  #    style = "font-family: 'Lobster', cursive;
-  #    font-weight: 500; line-height: 1.1; 
-  #    color: #4d3a7d;"))
   
   sidebarMenu(
-    
-    
-    tags$head(
-      tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
-    ),
-    
     # tags$style(
     #   ".main-sidebar {float:top; margin-top:0px; padding-left:5px; padding-right:0px}"
     # ),
-    # 
+    
     id="tabs",
-    # POLOZKY SIDEBAR  MENU ------------------------------------------------------------
+    # POLOZKY SIDEBAR MENU ------------------------------------------------------------
     menuItem(span("Interaktívna mapa", style="color:#FFA500"), tabName = "mapa", icon = icon("map"), selected=TRUE),
     
     menuItem(span("Grafy",style="color:#DA70D6"),  tabName = "grafy",icon = icon("line-chart")),
@@ -115,9 +107,11 @@ sidebar <- dashboardSidebar(
                                  selectize = TRUE,  selected = "celySystem", multiple = FALSE),
                      
                      # ROZSAH - input$range
-                     sliderInput("range", "Rok:",
-                                 min_date, max_date, value = max_date, animate = TRUE, step = 30),
+                     #  HTML(paste0("Navod", min_date, " and ", max_date, ".")),
                      
+                     sliderInput("range", "Rok:",
+                                 min_date, max_date, value = max_date, animate = FALSE, step = 30),
+                     # DALSI PRVOK NA ZOBRAZENIE
                      checkboxGroupInput("shpSelect", 
                                         label = span( "Zobraz na mape:",style="color:#A0A0A0;
                                               font-size: 11px"),
@@ -125,29 +119,20 @@ sidebar <- dashboardSidebar(
                                           "Štôlne" = "shpStolne",
                                           "Vodné štôlne" = "shpStolneVodne",
                                           "Pingy" = "shpPingy"),
-                                        selected = ""),
+                                           selected = ""),
                      
                      radioButtons("vybranaInfo", label = span( "Vyber typ informácií:",style="color:#A0A0A0;
                                               font-size: 11px"), c("História"="infoHist", "Technické parametre"="infoTech",
                                                                    "Súčasnosť"="infoDnes"))
                      ))
   
-  
-  # BUILD IN: ---------------------------------------------------------------
-  # h5("Built with",
-  #    img(src = "https://stevenmortimer.com/blog/tips-for-making-professional-shiny-apps-with-r/shiny-hex.png", height = "20px"),
-  #    "by",
-  #    img(src = "https://www.rstudio.com/wp-content/uploads/2014/07/RStudio-Logo-Blue-Gray.png", height = "20px"),
-  #    ".")
+
     )
-# 
-# tags$div(class="header", checked=NA,
-#          tags$p("Ready to take the Shiny tutorial? If so"),
-#          tags$a(href="shiny.rstudio.com/tutorial", "Click Here!")
-# )
 
 
 
+
+# 3_ DashboardBody --------------------------------------------------------
 body <- dashboardBody(
   includeCSS(file.path('www', 'styles.css')),
   
@@ -156,14 +141,14 @@ body <- dashboardBody(
   # ),
   
   tabItems(
-    # OBSAH KARTY - GRAFY -----------------------------------------------------
+    # 3.1_KARTA - MAPA -----------------------------------------------------
     tabItem(tabName = "mapa",
             tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}"),
             
             # LEAFLET -----------------------------------------------------------------
             leafletOutput("map"),
             
-            # ABSOLUTE PANEL - BASE MAP ----------------------------------------------
+            # BASE MAP - Abs.panel ----------------------------------------------
             absolutePanel(id = "control", top = 80, left = "auto", right = 28, bottom = "auto",
                           width="11%", height = "auto",
                           fixed = TRUE, draggable = FALSE,
@@ -180,36 +165,28 @@ body <- dashboardBody(
                           style = "opacity: 0.85; z-index: 10;" ),
             
             
-            # ABSOLUTE PANEL - INFO ---------------------------------------------------
+            # INFO - Abs.panel ---------------------------------------------------
             absolutePanel(
               top = "auto", left = "auto", right = 28, bottom = 20,
               width = "16%", height = "auto",draggable = TRUE,
               wellPanel(uiOutput("obsahInfoPanela")
-                
-                
-                
-                # selectInput("Suburb", "Select one Suburb:",choices = c("Select one Suburb" = "All")),
-                # uiOutput("secondselection")
               ),
+              textOutput("text"),
               style = "opacity: 0.80; z-index: 10;" ## z-index modification
             )
-            
     ),
     
     tabItem(tabName = "grafy",
-            
             
             box(width=12,
                 title = "2D a 3D Grafy",
                 
                 fluidRow(
                   column(9,
-                         
-                         
                          tabBox(width=12, height = "100%",
                                 id="tabBox_next_previous",
                                 
-                                # 2D graf -----------------------------------------------------------------
+                                # 4_KARTA - 2D graf -----------------------------------------------------------------
                                 tabPanel("2D GRAF",
                                          
                                          radioButtons("plotType", "Plot Type:", choices = c("ggplotly", "plotly")),
@@ -233,7 +210,6 @@ body <- dashboardBody(
                                                                    selected = "skupina"),
                                                        
                                                        br(),
-                                                       
                                                        
                                                        
                                                        actionButton("update", "Update Map!"),
@@ -264,7 +240,6 @@ body <- dashboardBody(
                                                        
                                                        
                                                        br(),
-                                                       
                                                        
                                                        
                                                        actionButton("update", "Update Map!"),
@@ -298,32 +273,17 @@ body <- dashboardBody(
                                                        
                                                        actionButton("update", "Update Map!"),
                                                        style = "opacity: 0.85; z-index: 10;" )
-                                         
-                                         
+                                                                                 
                                 )
                          ))
                   
-                  
-                  
-                  
-                  # , column(2,
-                  #        wellPanel(
-                  #          sliderInput("obs", "Number of observations:",  
-                  #                      min = 1, max = 1000, value = 500)
-                  #        ))
-                  
-                  
                 )
-                
             )
             
-    ) #koniec TabItem Grafy
-    
-    
-    
+    ) # end:tabItem(tabName = "grafy"
   )
   
-)
+) # end:dashboardBody
 
 
 
@@ -334,43 +294,16 @@ ui <- dashboardPage(skin = "black",
                     body = body)
 # ---------------------------------------------------------------------------
 
-#                 br(),br(),
-#                 
-#                 h5("Built with",
-#                    img(src = "logo_tajchy.png", height = "30px"),
-#                    "by",
-#                    img(src = "https://www.rstudio.com/wp-content/uploads/2014/07/RStudio-Logo-Blue-Gray.png", height = "30px"),
-#                    "."),
-#                 
 
-#                 # SLIDER ------------------------------------------------------------------
-#                 # Vysvetlujuci text
-#                 # HTML(paste0("Movies released between the following dates will be plotted. 
-#                 #   Pick dates between ", min_date, " and ", max_date, ".")),
-#                 
-#                 sliderInput("range", "Rok:",
-#                             min = 1500, max = max_date, value = c(1500,max_date), animate = TRUE, step = 25),
-#                 
-#                 # sliderInput("range", "Elevation (m n.m.)",
-#                 #             min = 1500, max = max_date, value = c(1500), animate = TRUE, step = 25),
-# 
 
-#               
-#                 
 
-#   
-#                 # selectInput - vyber obsahu tabulky-------------------------------------
-#                 selectInput(inputId = "analyza",
-#                             label = "Typ analýzy",c("Existencia" = "existencia",
-#                                                     "Kúpanie" = "kupanie",
-#                                                     "Vznik" = "vznik",
-#                                                     "Nadmorská výška" = "nadmV",
-#                                                     "Plocha" = "plocha",
-#                                                     "Dĺžka hrádze" = "dlzkHradze",
-#                                                     "Výška hrádze" = "vyskHrazde",
-#                                                     "Šírka hrádze" = "srkHradze",
-#                                                     "Objem v 1000m3" = "obj1000m3",
-#                                                     "Maximálna hĺbka v metroch" = "maxHlbkaM"),
-#                             selectize = TRUE, multiple = FALSE ),
-#                             
-
+# BUILD IN: ---------------------------------------------------------------
+# h5("Built with",
+#    img(src = "https://stevenmortimer.com/blog/tips-for-making-professional-shiny-apps-with-r/shiny-hex.png", height = "20px"),
+#    "by",
+#    img(src = "https://www.rstudio.com/wp-content/uploads/2014/07/RStudio-Logo-Blue-Gray.png", height = "20px"),
+#    ".")
+# tags$div(class="header", checked=NA,
+#          tags$p("Ready to take the Shiny tutorial? If so"),
+#          tags$a(href="shiny.rstudio.com/tutorial", "Click Here!")
+# )

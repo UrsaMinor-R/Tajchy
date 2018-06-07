@@ -9,7 +9,7 @@ shinyServer(function(input, output, session) {
   
   
   
-  # INTERAKTIVNA MAPA TAJCHOV -----------------------------------------------
+  # 1_INTERAKTIVNA MAPA TAJCHOV -----------------------------------------------
   
   # VYBER SKUPINY -----------------------------------------reactive
   group_selected <- reactive({
@@ -26,13 +26,31 @@ shinyServer(function(input, output, session) {
   
   # ROZSAH ROKOV -----------------------------------------reactive
   shp_selected <- reactive({
-    req(input$range)
     textRange <- paste0(input$range, "-01-01", sep="")
     group_selected()[group_selected()$vznik < as.Date(textRange),]
     # shpTajchy$vznik > as.Date(as.POSIXct(paste(input$range[1], "-01-01", sep=""), origin = "1960-10-01")) &
   })
   
   
+  # INFOPANEL ---------------------------------------------------------------
+  output$obsahInfoPanela <- renderUI({
+    if (is.null(input$vybranaInfo))
+      return()
+    
+    switch(input$vybranaInfo,
+           "infoHist" =  selectInput("infoVolba", "Vyber typ informácie:", choices = zoz$infoHist),
+           "infoTech" = selectInput("infoVolba", "Vyber typ informácie:", choices = zoz$infoTech),
+           "infoDnes" =   selectInput("infoVolba", "Vyber typ informácie:", choices = zoz$infoDnes))
+  })
+  
+# toto <-   reactive({input$infoVolba})
+# output$text <- renderText({paste0(toto())})
+
+# reactLabel <- reactive({
+#   shp_selected()$infoVolba
+# })
+
+
   # LEAFLET -----------------------------------------------------------------
   output$map <- renderLeaflet({
     
@@ -42,27 +60,27 @@ shinyServer(function(input, output, session) {
       addPolygons(
         data = shp_selected(),
         weight = 1,
-        col = 'blue',
-        label = shp_selected()$name
+        col = 'blue'
+        # label = shp_selected()$label1
       ) %>%
-      
-      # addMarkers(lng = 18.9, lat = 48.46, popup = "Hi there")%>%
       mapOptions(zoomToLimits = "always")
   })
   
   observe({
     map <- leafletProxy("map") 
     map %>% clearShapes()
-    
-    map %>%  
+    # 
+    # 
+    map %>%
       addPolygons(
         data = shp_selected(),
         weight = 1,
         col = 'blue',
-        label = shp_selected()$name
+        label = shp_selected()$input$label1
       )
 
     shpSelect <- input$shpSelect # the function is triggered when the select option changes
+
 
     if (length(shpSelect) > 0) {
       # JARKY
@@ -85,27 +103,24 @@ shinyServer(function(input, output, session) {
         leafletProxy("map")  %>% addCircles(lng = shpPingy@coords[,1], lat = shpPingy@coords[,2],
                                             weight = 1, radius=5,
                                             color="#ffa500", stroke = TRUE, fillOpacity = 0.8)}
+      # 
+      # if (toto() %in% "name") {
+      #   leafletProxy("map")  %>% addPolygons(
+      #     data = shp_selected(),
+      #     weight = 1,
+      #     col = 'red',
+      #     label = shp_selected()$skupina,
+      #             noHide = T, direction = "bottom",offset = c(0, 15)
+      #   )}
 
       
     }
   
   })
+
+
   
   
-
-# INFOPANEL ---------------------------------------------------------------
-
-  output$obsahInfoPanela <- renderUI({
-    if (is.null(input$vybranaInfo))
-      return()
-    
-    # Depending on input$input_type, we'll generate a different
-    # UI component and send it to the client.
-    switch(input$vybranaInfo,
-           "infoHist" =  selectInput("info", "Vyber typ informácie:", choices = zoz$infoHist),
-           "infoTech" = selectInput("info", "Vyber typ informácie:", choices = zoz$infoTech),
-           "infoDnes" =   selectInput("info", "Vyber typ informácie:", choices = zoz$infoDnes))
-  })
   # setView(lng = 18.91, lat = 48.452, zoom = 13 ) %>%
   
   
@@ -121,6 +136,30 @@ shinyServer(function(input, output, session) {
   # plot(shpTajchy[shpTajchy$skupina=='belianske', ])
   
   
+  # VELKY UPDATE INFORMACII V MAPE ------------------------------------------
+  # observe({
+  #   map <- leafletProxy("map") 
+  #   
+  #   infTyp <- input$info # the function is triggered when the select option changes
+  #   
+  #   if (length(infTyp) > 0) {
+  #     # JARKY
+  #     if (infTyp == "name") {
+  #       leafletProxy("map")   addPolygons(
+  #         data = shp_selected(),
+  #         weight = 1,
+  #         col = 'blue',
+  #         label = shp_selected()$name,
+  #         noHide = T, direction = "bottom",offset = c(0, 15)
+  #       )}
+  #    
+  #     
+  #     
+  #   }
+  #   
+  # })
+  # #
+
   
   # GRAFY a TABULKA-------------------------------------------------------------------
   
@@ -202,7 +241,7 @@ shinyServer(function(input, output, session) {
   })
   
   
-  
+
   
   # DATATABLE ---------------------------------------------------------------
   # datasetDT <- reactive({
