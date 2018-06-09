@@ -32,7 +32,7 @@ header <- dashboardHeader(
   
   title = HTML(
     "<div style = 'background-color:#FFFFFF; vertical-align:middle'>
-    <img src = 'logo_tajchy.png' align = 'left' height = '40px'>
+    <img src = 'tajch-01.png' align = 'centre' height = '50px'>
     <nadpis>TAJCHÁR  - tvoj sprievodca po Banskostiavnických Tajchoch<nadpis/> <pisane>-- nafullovaný informáciami --<pisane/>
     </div>"),
   titleWidth = "97%"
@@ -41,6 +41,8 @@ header <- dashboardHeader(
 
 # 2_Sidebar ---------------------------------------------------------------
 sidebar <- dashboardSidebar(
+  
+  theme = "bootstrap.css",
   # Prepojenie na CSS
   tags$head(
     tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
@@ -73,15 +75,15 @@ sidebar <- dashboardSidebar(
     
     id="tabs",
     # POLOZKY SIDEBAR MENU ------------------------------------------------------------
-    menuItem(span("Interaktívna mapa", style="color:#FFA500"), tabName = "mapa", icon = icon("map"), selected=TRUE),
+    menuItem(span("Interaktívna mapa", style="color: #F9A71D"), tabName = "mapa", icon = icon("map"), selected=TRUE),
     
-    menuItem(span("Grafy",style="color:#DA70D6"),  tabName = "grafy",icon = icon("line-chart")),
+    menuItem(span("Grafy",style="color:#79BB43"),  tabName = "grafy",icon = icon("line-chart")),
     #badgeLabel = "new", badgeColor = "green"),
     
-    menuItem(span("Zdrojový kód",style="color:#00BFFF"), icon = icon("file-code-o"), 
+    menuItem(span("Zdrojový kód",style="color:#B8D540"), icon = icon("file-code-o"), 
              href = "https://github.com/UrsaMinor-R/Tajchy"),
     
-    menuItem(span("Autori",style="color:#00FFFF"), icon = icon("github-alt"), 
+    menuItem(span("Autori",style="color:#2AA585"), icon = icon("github-alt"), 
              href = "https://github.com/UrsaMinor-R/Tajchy"),
     # hr(),
     
@@ -162,7 +164,7 @@ body <- dashboardBody(
                                                                                     "Stamen.Watercolor",
                                                                                     "Stamen.Terrain",
                                                                                     "Stamen.Toner"), 
-                                      selected = "OpenStreetMap.Mapnik"),
+                                      selected = "Esri.WorldImagery"),
                           actionButton("update", "Aktualizuj!"),
                           style = "opacity: 0.85; z-index: 10;",
                           
@@ -176,8 +178,8 @@ body <- dashboardBody(
               width = "16%", height = "auto",draggable = TRUE,
               wellPanel(uiOutput("obsahInfoPanela")
               ),
-              style = "opacity: 0.80; z-index: 10;", ## z-index modification
-              textOutput("text")
+              textOutput("text"),
+              style = "opacity: 0.80; z-index: 10;" ## z-index modification
             )
     ),
     
